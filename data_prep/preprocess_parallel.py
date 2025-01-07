@@ -258,21 +258,21 @@ def parse_args():
     parser.add_argument(
         '--trn_y_path',
         type=str,
-        required=True,
+        default="./downloads/train_y_v0.1.0.csv",
         help='Path to the training labels CSV file (e.g., ./downloads/train_y_v0.1.0.csv).'
     )
     
     parser.add_argument(
         '--trn_x_path',
         type=str,
-        required=True,
+        default="./downloads/train_X_v0.1.0.zip",
         help='Path to the training data ZIP file (e.g., ./downloads/train_X_v0.1.0.zip).'
     )
     
     parser.add_argument(
         '--tst_x_path',
         type=str,
-        required=True,
+        default="./downloads/test_X_v0.1.0.zip",
         help='Path to the testing data ZIP file (e.g., ./downloads/test_X_v0.1.0.zip).'
     )
     
