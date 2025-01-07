@@ -8,6 +8,7 @@ from tqdm import tqdm
 from zipfile import ZipFile
 from scipy.interpolate import interp1d
 from concurrent.futures import ProcessPoolExecutor, as_completed
+import argparse
 import warnings
 warnings.filterwarnings("ignore")
 
@@ -249,15 +250,57 @@ def preprocessing(trn_x_path, trn_y_path, tst_x_path, split_num: int, num_worker
     # Save testing features
     np.save("./test_features.npy", test_features)
 
-if __name__ == '__main__':
-    trn_y_path = "./downloads/train_y_v0.1.0.csv"
-    trn_x_path = "./downloads/train_X_v0.1.0.zip"
-    tst_x_path = "./downloads/test_X_v0.1.0.zip"
+def parse_args():
+    parser = argparse.ArgumentParser(
+        description='Preprocess time-series data with feature extraction.'
+    )
+    
+    parser.add_argument(
+        '--trn_y_path',
+        type=str,
+        required=True,
+        help='Path to the training labels CSV file (e.g., ./downloads/train_y_v0.1.0.csv).'
+    )
+    
+    parser.add_argument(
+        '--trn_x_path',
+        type=str,
+        required=True,
+        help='Path to the training data ZIP file (e.g., ./downloads/train_X_v0.1.0.zip).'
+    )
+    
+    parser.add_argument(
+        '--tst_x_path',
+        type=str,
+        required=True,
+        help='Path to the testing data ZIP file (e.g., ./downloads/test_X_v0.1.0.zip).'
+    )
+    
+    parser.add_argument(
+        '--split_num',
+        type=int,
+        default=3,
+        help='Number of splits for feature extraction (default: 3).'
+    )
+    
+    parser.add_argument(
+        '--num_workers',
+        type=int,
+        default=4,
+        help='Number of worker processes for multiprocessing (default: 8).'
+    )
+    
+    args = parser.parse_args()
 
+    return args
+
+if __name__ == '__main__':
+    args = parse_args()
+    
     preprocessing(
-        trn_x_path,
-        trn_y_path,
-        tst_x_path,
-        split_num=3,
-        num_workers=8  # Adjust based on your CPU cores
+        trn_x_path=args.trn_x_path,
+        trn_y_path=args.trn_y_path,
+        tst_x_path=args.tst_x_path,
+        split_num=args.split_num,
+        num_workers=args.num_workers
     )
