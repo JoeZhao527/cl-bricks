@@ -202,8 +202,8 @@ def process_datapoint(args):
         features = feature_extraction(datapoint, split_num, tsfel_freq_cfg)
         feat_mtx = np.stack([list(feat.values()) for feat in features], axis=0)
         feat_mtx = np.nan_to_num(feat_mtx)
-        if len(feat_mtx) != 160:
-            print(index, len(feat_mtx))
+        if len(feat_mtx[0]) != 160:
+            print(index, len(feat_mtx[0]))
         return (index, feat_mtx)
     except Exception as e:
         print(f"Error processing {filename}: {e}")
