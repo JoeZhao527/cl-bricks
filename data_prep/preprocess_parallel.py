@@ -187,8 +187,6 @@ def process_datapoint(args):
         return (index, feat_mtx)
     except Exception as e:
         print(f"Error processing {filename}: {e}")
-        print(traceback.format_stack())
-        raise
         return (index, None)
 
 def preprocess_data(zip_path, filenames, split_num, feature_keys, num_workers=4, filename_prefix=""):
@@ -241,7 +239,7 @@ def preprocessing(trn_x_path, trn_y_path, tst_x_path, split_num: int, num_worker
     np.save("./feature_keys.npy", feat_keys)
     
     # Preprocess training data
-    train_features = preprocess_data(trn_x_path, train_filenames, split_num, list(feat_keys), num_workers, "train_X/")
+    train_features = preprocess_data(trn_x_path, train_filenames[:2000], split_num, list(feat_keys), num_workers, "train_X/")
     
     # Save training features
     np.save("./train_features.npy", train_features)
@@ -250,7 +248,7 @@ def preprocessing(trn_x_path, trn_y_path, tst_x_path, split_num: int, num_worker
     with ZipFile(tst_x_path, 'r') as test_zip:
         test_filenames = test_zip.namelist()[1:]  # Assuming first file is not a data file
     
-    test_features = preprocess_data(tst_x_path, test_filenames, split_num, list(feat_keys), num_workers)
+    test_features = preprocess_data(tst_x_path, test_filenames[:2000], split_num, list(feat_keys), num_workers)
     
     # Save testing features
     np.save("./test_features.npy", test_features)
