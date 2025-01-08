@@ -9,6 +9,7 @@ from zipfile import ZipFile
 from scipy.interpolate import interp1d
 from concurrent.futures import ProcessPoolExecutor, as_completed
 import argparse
+import traceback
 import warnings
 warnings.filterwarnings("ignore")
 
@@ -186,9 +187,11 @@ def process_datapoint(args):
         return (index, feat_mtx)
     except Exception as e:
         print(f"Error processing {filename}: {e}")
+        print(traceback.format_stack())
+        raise
         return (index, None)
 
-def preprocess_data(zip_path, filenames, split_num, num_workers=4, filename_prefix=""):
+def preprocess_data(zip_path, filenames, split_num, feature_keys, num_workers=4, filename_prefix=""):
     """
     Preprocess data using multiprocessing.
     
@@ -196,7 +199,9 @@ def preprocess_data(zip_path, filenames, split_num, num_workers=4, filename_pref
         zip_path (str): Path to the zip file.
         filenames (List[str]): List of filenames to process.
         split_num (int): Number of splits.
+        feature_keys (List[str]): List of feature keys
         num_workers (int): Number of worker processes.
+        filename_prefix (str): 
     
     Returns:
         np.ndarray: Feature matrix.
@@ -214,7 +219,7 @@ def preprocess_data(zip_path, filenames, split_num, num_workers=4, filename_pref
                 feature_list[idx] = feat_mtx
             else:
                 # Handle failed datapoint, e.g., fill with zeros or remove
-                feature_list[idx] = np.zeros((split_num, len(tsfel.get_features_by_domain())))
+                feature_list[idx] = np.zeros((split_num, len(feature_keys)))
     
     # Convert list to numpy array
     feature_matrix = np.stack(feature_list, axis=0)
@@ -224,28 +229,28 @@ def preprocessing(trn_x_path, trn_y_path, tst_x_path, split_num: int, num_worker
     # Load training labels
     train_y = pd.read_csv(trn_y_path)
     
-    # Get training filenames
-    with ZipFile(trn_x_path, 'r') as train_zip:
-        train_filenames = train_y['filename'].tolist()
-    
-    # Preprocess training data
-    train_features = preprocess_data(trn_x_path, train_filenames, split_num, num_workers, "train_X/")
-    
-    # Save training features
-    np.save("./train_features.npy", train_features)
-    
     # Get feature keys from tsfel (assuming all datapoints have the same features)
     with ZipFile(trn_x_path, 'r') as train_zip:
         first_datapoint = pickle.loads(train_zip.read('train_X/' + train_filenames[0]))
     first_features = feature_extraction(first_datapoint, split_num)
     feat_keys = np.array(list(first_features[0].keys()))
     np.save("./feature_keys.npy", feat_keys)
+
+    # Get training filenames
+    with ZipFile(trn_x_path, 'r') as train_zip:
+        train_filenames = train_y['filename'].tolist()
+    
+    # Preprocess training data
+    train_features = preprocess_data(trn_x_path, train_filenames, split_num, list(feat_keys), num_workers, "train_X/")
+    
+    # Save training features
+    np.save("./train_features.npy", train_features)
     
     # Preprocess testing data
     with ZipFile(tst_x_path, 'r') as test_zip:
         test_filenames = test_zip.namelist()[1:]  # Assuming first file is not a data file
     
-    test_features = preprocess_data(tst_x_path, test_filenames, split_num, num_workers)
+    test_features = preprocess_data(tst_x_path, test_filenames, split_num, list(feat_keys), num_workers)
     
     # Save testing features
     np.save("./test_features.npy", test_features)
