@@ -2,6 +2,7 @@ import pandas as pd
 import numpy as np
 import pickle
 import tsfel
+import json
 import os
 from typing import Tuple, List, Dict, Any
 from tqdm import tqdm
@@ -106,19 +107,37 @@ def tsfel_feature_extraction(signal: np.ndarray, timestamp: np.ndarray) -> Dict[
     """
     Extract signal features with tsfel
     """
-    # Get the default TSFEL configuration (features from all domains)
-    cfg = tsfel.get_features_by_domain(domain=['statistical', 'temporal'], json_path="./data_prep/tsfel_freq_config.json")
-    
-    ts = np.linspace(timestamp.min(), timestamp.max(), num=len(signal))
-    features_df = tsfel.time_series_features_extractor(
-        cfg, signal,
-        fs=1/((ts[1]-ts[0])/3600),
+    # interpolate values
+    dt = 4838397.067/85922
+    ts1 = np.linspace(timestamp.min(), timestamp.max(), num=len(signal))
+    ts2 = np.arange(timestamp.min(), timestamp.max(), dt)
+    interpolator = interp1d(timestamp, signal, kind='nearest')
+    values_fixed = interpolator(ts1)
+    values_forfreq = interpolator(ts2)
+
+    # statistical and temporal domain
+    cfg1 = tsfel.get_features_by_domain(domain=['statistical', 'temporal'])
+    features_df_1 = tsfel.time_series_features_extractor(
+        cfg1, values_fixed,
+        fs=1/((ts1[1]-ts1[0])/3600),
+        verbose=False
+    )
+
+    # frequency domain
+    with open("./data_prep/tsfel_freq_config.json", "r") as f:
+        cfg2 = json.load(f)
+    features_df_2 = tsfel.time_series_features_extractor(
+        cfg2, values_forfreq,
+        fs=1/((ts2[1]-ts2[0])/3600),
         verbose=False
     )
     
     # TSFEL returns a DataFrame with one row per signal. Convert that row to a dictionary.
     # If signal is 1D, you typically get one row. We take .iloc[0] to get that row as a Series.
-    features_dict = features_df.iloc[0].to_dict()
+    features_dict = {
+        **features_df_1.iloc[0].to_dict(),
+        **features_df_2.iloc[0].to_dict()
+    }
     return features_dict
 
 def input_split(signal: np.ndarray, timestamp: np.ndarray, split_num: int) -> Tuple[List[np.ndarray], List[np.ndarray]]:
@@ -239,6 +258,7 @@ def preprocessing(trn_x_path, trn_y_path, tst_x_path, split_num: int, output_dir
         first_datapoint = pickle.loads(train_zip.read('train_X/' + train_filenames[0]))
     first_features = feature_extraction(first_datapoint, split_num)
     feat_keys = np.array(list(first_features[0].keys()))
+    print(f"Feature dimensions: {len(feat_keys)}")
     np.save(os.path.join(output_dir, "feature_keys.npy"), feat_keys)
     
     # Preprocess training data
