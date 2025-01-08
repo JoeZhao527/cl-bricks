@@ -207,7 +207,7 @@ def process_datapoint(args):
         print(f"Error processing {filename}: {e}")
         return (index, None)
 
-def preprocess_data(zip_path, filenames, split_num, feature_keys, num_workers=4, filename_prefix=""):
+def preprocess_data(zip_path, filenames, split_num, feature_keys, tsfel_freq_cfg, num_workers=4, filename_prefix=""):
     """
     Preprocess data using multiprocessing.
     
@@ -223,9 +223,6 @@ def preprocess_data(zip_path, filenames, split_num, feature_keys, num_workers=4,
         np.ndarray: Feature matrix.
         np.ndarray: Feature keys.
     """
-    with open("./data_prep/tsfel_freq_config.json", "r") as f:
-        tsfel_freq_cfg = json.load(f)
-
     feature_list = [None] * len(filenames)
     with ProcessPoolExecutor(max_workers=num_workers) as executor:
         # Prepare arguments with indices to maintain order
@@ -255,16 +252,28 @@ def preprocessing(trn_x_path, trn_y_path, tst_x_path, split_num: int, output_dir
     # initialize output directory
     os.makedirs(output_dir, exist_ok=False)
 
+
+    with open("./data_prep/tsfel_freq_config.json", "r") as f:
+        tsfel_freq_cfg = json.load(f)
+
     # Get feature keys from tsfel (assuming all datapoints have the same features)
     with ZipFile(trn_x_path, 'r') as train_zip:
         first_datapoint = pickle.loads(train_zip.read('train_X/' + train_filenames[0]))
-    first_features = feature_extraction(first_datapoint, split_num)
+    first_features = feature_extraction(first_datapoint, split_num, tsfel_freq_cfg)
     feat_keys = np.array(list(first_features[0].keys()))
     print(f"Feature dimensions: {len(feat_keys)}")
     np.save(os.path.join(output_dir, "feature_keys.npy"), feat_keys)
     
     # Preprocess training data
-    train_features = preprocess_data(trn_x_path, train_filenames[:2000], split_num, list(feat_keys), num_workers, "train_X/")
+    train_features = preprocess_data(
+        zip_path=trn_x_path,
+        filenames=train_filenames[:2000],
+        split_num=split_num,
+        feature_keys=list(feat_keys),
+        tsfel_freq_cfg=tsfel_freq_cfg,
+        num_workers=num_workers,
+        filename_prefix="train_X/"
+    )
     
     # Save training features
     np.save(os.path.join(output_dir, "train_features.npy"), train_features)
@@ -273,7 +282,14 @@ def preprocessing(trn_x_path, trn_y_path, tst_x_path, split_num: int, output_dir
     with ZipFile(tst_x_path, 'r') as test_zip:
         test_filenames = test_zip.namelist()[1:]  # Assuming first file is not a data file
     
-    test_features = preprocess_data(tst_x_path, test_filenames[:2000], split_num, list(feat_keys), num_workers)
+    test_features = preprocess_data(
+        zip_path=tst_x_path,
+        filenames=test_filenames[:2000],
+        split_num=split_num,
+        feature_keys=list(feat_keys),
+        tsfel_freq_cfg=tsfel_freq_cfg,
+        num_workers=num_workers
+    )
     
     # Save testing features
     np.save(os.path.join(output_dir, "test_features.npy"), test_features)
