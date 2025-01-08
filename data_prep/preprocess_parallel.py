@@ -229,16 +229,16 @@ def preprocessing(trn_x_path, trn_y_path, tst_x_path, split_num: int, num_worker
     # Load training labels
     train_y = pd.read_csv(trn_y_path)
     
+    # Get training filenames
+    with ZipFile(trn_x_path, 'r') as train_zip:
+        train_filenames = train_y['filename'].tolist()
+
     # Get feature keys from tsfel (assuming all datapoints have the same features)
     with ZipFile(trn_x_path, 'r') as train_zip:
         first_datapoint = pickle.loads(train_zip.read('train_X/' + train_filenames[0]))
     first_features = feature_extraction(first_datapoint, split_num)
     feat_keys = np.array(list(first_features[0].keys()))
     np.save("./feature_keys.npy", feat_keys)
-
-    # Get training filenames
-    with ZipFile(trn_x_path, 'r') as train_zip:
-        train_filenames = train_y['filename'].tolist()
     
     # Preprocess training data
     train_features = preprocess_data(trn_x_path, train_filenames, split_num, list(feat_keys), num_workers, "train_X/")
