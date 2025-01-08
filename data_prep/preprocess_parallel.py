@@ -111,14 +111,16 @@ def tsfel_feature_extraction(signal: np.ndarray, timestamp: np.ndarray, tsfel_fr
     dt = 4838397.067/85922
     ts1 = np.linspace(timestamp.min(), timestamp.max(), num=len(signal))
     ts2 = np.arange(timestamp.min(), timestamp.max(), dt)
-    interpolator = interp1d(timestamp, signal, kind='nearest')
+    # interpolator = interp1d(timestamp, signal, kind='nearest')
     # values_fixed = interpolator(ts1)
-    values_forfreq = interpolator(ts2)
+    # values_forfreq = interpolator(ts2)
+    values_fixed = np.interp(ts1, timestamp, signal)
+    values_forfreq = np.interp(ts2, timestamp, signal)
 
     # statistical and temporal domain
     cfg1 = tsfel.get_features_by_domain(domain=['statistical', 'temporal'])
     features_df_1 = tsfel.time_series_features_extractor(
-        cfg1, signal,
+        cfg1, values_fixed,
         fs=1/((ts1[1]-ts1[0])/3600),
         verbose=False
     )
