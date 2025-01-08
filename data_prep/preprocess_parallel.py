@@ -107,7 +107,7 @@ def tsfel_feature_extraction(signal: np.ndarray, timestamp: np.ndarray) -> Dict[
     Extract signal features with tsfel
     """
     # Get the default TSFEL configuration (features from all domains)
-    cfg = tsfel.get_features_by_domain()
+    cfg = tsfel.get_features_by_domain(domain=['statistical', 'temporal'], json_path="./data_prep/tsfel_freq_config.json")
     
     ts = np.linspace(timestamp.min(), timestamp.max(), num=len(signal))
     features_df = tsfel.time_series_features_extractor(
@@ -223,7 +223,7 @@ def preprocess_data(zip_path, filenames, split_num, feature_keys, num_workers=4,
     feature_matrix = np.stack(feature_list, axis=0)
     return feature_matrix
 
-def preprocessing(trn_x_path, trn_y_path, tst_x_path, split_num: int, num_workers: int = 4):
+def preprocessing(trn_x_path, trn_y_path, tst_x_path, split_num: int, output_dir: str, num_workers: int = 4):
     # Load training labels
     train_y = pd.read_csv(trn_y_path)
     
@@ -231,18 +231,21 @@ def preprocessing(trn_x_path, trn_y_path, tst_x_path, split_num: int, num_worker
     with ZipFile(trn_x_path, 'r') as train_zip:
         train_filenames = train_y['filename'].tolist()
 
+    # initialize output directory
+    os.makedirs(output_dir, exist_ok=False)
+
     # Get feature keys from tsfel (assuming all datapoints have the same features)
     with ZipFile(trn_x_path, 'r') as train_zip:
         first_datapoint = pickle.loads(train_zip.read('train_X/' + train_filenames[0]))
     first_features = feature_extraction(first_datapoint, split_num)
     feat_keys = np.array(list(first_features[0].keys()))
-    np.save("./feature_keys.npy", feat_keys)
+    np.save(os.path.join(output_dir, "feature_keys.npy"), feat_keys)
     
     # Preprocess training data
     train_features = preprocess_data(trn_x_path, train_filenames[:2000], split_num, list(feat_keys), num_workers, "train_X/")
     
     # Save training features
-    np.save("./train_features.npy", train_features)
+    np.save(os.path.join(output_dir, "train_features.npy"), train_features)
     
     # Preprocess testing data
     with ZipFile(tst_x_path, 'r') as test_zip:
@@ -251,7 +254,7 @@ def preprocessing(trn_x_path, trn_y_path, tst_x_path, split_num: int, num_worker
     test_features = preprocess_data(tst_x_path, test_filenames[:2000], split_num, list(feat_keys), num_workers)
     
     # Save testing features
-    np.save("./test_features.npy", test_features)
+    np.save(os.path.join(output_dir, "test_features.npy"), test_features)
 
 def parse_args():
     parser = argparse.ArgumentParser(
@@ -292,6 +295,13 @@ def parse_args():
         default=4,
         help='Number of worker processes for multiprocessing (default: 8).'
     )
+
+    parser.add_argument(
+        '--output_dir',
+        type=str,
+        default="./features",
+        help='Path to the output dir (default: ./features)'
+    )
     
     args = parser.parse_args()
 
@@ -305,5 +315,6 @@ if __name__ == '__main__':
         trn_y_path=args.trn_y_path,
         tst_x_path=args.tst_x_path,
         split_num=args.split_num,
+        output_dir=args.output_dir,
         num_workers=args.num_workers
     )
