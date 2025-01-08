@@ -110,11 +110,11 @@ def tsfel_feature_extraction(signal: np.ndarray, timestamp: np.ndarray, tsfel_fr
     # interpolate values
     dt = 4838397.067/85922
     ts1 = np.linspace(timestamp.min(), timestamp.max(), num=len(signal))
-    # ts2 = np.arange(timestamp.min(), timestamp.max(), dt)
+    ts2 = np.arange(timestamp.min(), timestamp.max(), dt)
 
     interpolator = interp1d(timestamp, signal, kind='nearest')
     values_fixed = interpolator(ts1)
-    # values_forfreq = interpolator(ts2)
+    values_forfreq = interpolator(ts2)
     
     # statistical and temporal domain
     cfg1 = tsfel.get_features_by_domain(domain=['statistical', 'temporal'])
@@ -127,8 +127,8 @@ def tsfel_feature_extraction(signal: np.ndarray, timestamp: np.ndarray, tsfel_fr
     # frequency domain
     cfg2 = tsfel_freq_cfg
     features_df_2 = tsfel.time_series_features_extractor(
-        cfg2, values_fixed,
-        fs=1/((ts1[1]-ts1[0])/3600),
+        cfg2, values_forfreq,
+        fs=1/((ts2[1]-ts2[0])/3600),
         verbose=False
     )
     
@@ -270,7 +270,7 @@ def preprocessing(trn_x_path, trn_y_path, tst_x_path, split_num: int, output_dir
     # Preprocess training data
     train_features = preprocess_data(
         zip_path=trn_x_path,
-        filenames=train_filenames[:2000],
+        filenames=train_filenames,
         split_num=split_num,
         feature_keys=list(feat_keys),
         tsfel_freq_cfg=tsfel_freq_cfg,
@@ -287,7 +287,7 @@ def preprocessing(trn_x_path, trn_y_path, tst_x_path, split_num: int, output_dir
     
     test_features = preprocess_data(
         zip_path=tst_x_path,
-        filenames=test_filenames[:2000],
+        filenames=test_filenames,
         split_num=split_num,
         feature_keys=list(feat_keys),
         tsfel_freq_cfg=tsfel_freq_cfg,
