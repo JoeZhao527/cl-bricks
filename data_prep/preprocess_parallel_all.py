@@ -2,7 +2,6 @@ import pandas as pd
 import numpy as np
 import pickle
 import tsfel
-import json
 import os
 from typing import Tuple, List, Dict, Any
 from tqdm import tqdm
@@ -103,40 +102,23 @@ def signal_stat_feature_extraction(signal: np.ndarray) -> Dict[str, Any]:
         "value_diffmaxmin": value_diffmaxmin,
     }
 
-def tsfel_feature_extraction(signal: np.ndarray, timestamp: np.ndarray, tsfel_freq_cfg: dict) -> Dict[str, Any]:
+def tsfel_feature_extraction(signal: np.ndarray, timestamp: np.ndarray) -> Dict[str, Any]:
     """
     Extract signal features with tsfel
     """
-    # interpolate values
-    dt = 4838397.067/85922
-    ts1 = np.linspace(timestamp.min(), timestamp.max(), num=len(signal))
-    ts2 = np.arange(timestamp.min(), timestamp.max(), dt)
-    interpolator = interp1d(timestamp, signal, kind='nearest')
-    values_fixed = interpolator(ts1)
-    values_forfreq = interpolator(ts2)
-
-    # statistical and temporal domain
-    cfg1 = tsfel.get_features_by_domain(domain=['statistical', 'temporal'])
-    features_df_1 = tsfel.time_series_features_extractor(
-        cfg1, values_fixed,
-        fs=1/((ts1[1]-ts1[0])/3600),
-        verbose=False
-    )
-
-    # frequency domain
-    cfg2 = tsfel_freq_cfg
-    features_df_2 = tsfel.time_series_features_extractor(
-        cfg2, values_forfreq,
-        fs=1/((ts2[1]-ts2[0])/3600),
+    # Get the default TSFEL configuration (features from all domains)
+    cfg = tsfel.get_features_by_domain()
+    
+    ts = np.linspace(timestamp.min(), timestamp.max(), num=len(signal))
+    features_df = tsfel.time_series_features_extractor(
+        cfg, signal,
+        fs=1/((ts[1]-ts[0])/3600),
         verbose=False
     )
     
     # TSFEL returns a DataFrame with one row per signal. Convert that row to a dictionary.
     # If signal is 1D, you typically get one row. We take .iloc[0] to get that row as a Series.
-    features_dict = {
-        **features_df_1.iloc[0].to_dict(),
-        **features_df_2.iloc[0].to_dict()
-    }
+    features_dict = features_df.iloc[0].to_dict()
     return features_dict
 
 def input_split(signal: np.ndarray, timestamp: np.ndarray, split_num: int) -> Tuple[List[np.ndarray], List[np.ndarray]]:
@@ -167,7 +149,7 @@ def input_split(signal: np.ndarray, timestamp: np.ndarray, split_num: int) -> Tu
     # Convert to lists for the return type
     return list(split_signal), list(split_timestamp)
 
-def feature_extraction(datapoint: dict, split_num: int, tsfel_freq_cfg: dict):
+def feature_extraction(datapoint: dict, split_num: int):
     signal_list, timestamp_list = input_split(
         signal=datapoint['v'],
         timestamp=datapoint['t'].astype('timedelta64[s]').astype(int),
@@ -177,7 +159,7 @@ def feature_extraction(datapoint: dict, split_num: int, tsfel_freq_cfg: dict):
     feature_list = []
     for i in range(len(signal_list)):
         time_feat = timestamp_feature_extraction(timestamp_list[i])
-        sig_feat = tsfel_feature_extraction(signal_list[i], timestamp_list[i], tsfel_freq_cfg)
+        sig_feat = tsfel_feature_extraction(signal_list[i], timestamp_list[i])
         sig_stat_feat = signal_stat_feature_extraction(signal_list[i])
         feature_list.append({
             **sig_feat, **time_feat, **sig_stat_feat
@@ -195,11 +177,11 @@ def process_datapoint(args):
     Returns:
         Tuple[int, np.ndarray]: Index and the feature matrix for the datapoint
     """
-    zip_path, filename, split_num, index, filename_prefix, tsfel_freq_cfg = args
+    zip_path, filename, split_num, index, filename_prefix = args
     try:
         with ZipFile(zip_path, 'r') as zip_file:
             datapoint = pickle.loads(zip_file.read(filename_prefix + filename))
-        features = feature_extraction(datapoint, split_num, tsfel_freq_cfg)
+        features = feature_extraction(datapoint, split_num)
         feat_mtx = np.stack([list(feat.values()) for feat in features], axis=0)
         feat_mtx = np.nan_to_num(feat_mtx)
         return (index, feat_mtx)
@@ -223,13 +205,10 @@ def preprocess_data(zip_path, filenames, split_num, feature_keys, num_workers=4,
         np.ndarray: Feature matrix.
         np.ndarray: Feature keys.
     """
-    with open("./data_prep/tsfel_freq_config.json", "r") as f:
-        tsfel_freq_cfg = json.load(f)
-
     feature_list = [None] * len(filenames)
     with ProcessPoolExecutor(max_workers=num_workers) as executor:
         # Prepare arguments with indices to maintain order
-        args = [(zip_path, filename, split_num, idx, filename_prefix, tsfel_freq_cfg) for idx, filename in enumerate(filenames)]
+        args = [(zip_path, filename, split_num, idx, filename_prefix) for idx, filename in enumerate(filenames)]
         # Use tqdm for progress bar
         futures = {executor.submit(process_datapoint, arg): arg[3] for arg in args}
         for future in tqdm(as_completed(futures), total=len(futures), desc=f"Processing {os.path.basename(zip_path)}"):
@@ -260,7 +239,6 @@ def preprocessing(trn_x_path, trn_y_path, tst_x_path, split_num: int, output_dir
         first_datapoint = pickle.loads(train_zip.read('train_X/' + train_filenames[0]))
     first_features = feature_extraction(first_datapoint, split_num)
     feat_keys = np.array(list(first_features[0].keys()))
-    print(f"Feature dimensions: {len(feat_keys)}")
     np.save(os.path.join(output_dir, "feature_keys.npy"), feat_keys)
     
     # Preprocess training data
