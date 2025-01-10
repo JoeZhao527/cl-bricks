@@ -40,4 +40,5 @@ class SimpleCNN(nn.Module):
         x = F.relu(x)
         x = self.dropout(x)
         x = self.fc2(x)  # (batch_size, n_classes)
+        
         return x
