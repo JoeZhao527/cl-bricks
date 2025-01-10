@@ -153,7 +153,7 @@ if __name__ == '__main__':
     # ------------------------
     # Configuration
     # ------------------------
-    max_workers = 6  # Adjust based on your CPU cores
+    max_workers = 20  # Adjust based on your CPU cores
     interval = None  # Set if needed
 
     # ------------------------
