@@ -127,7 +127,5 @@ class ResNet(nn.Module):
         x = self.avgpool(x)    # (batch_size, 512, 1, 1)
         x = torch.flatten(x, 1)  # (batch_size, 512)
         x = self.fc(x)         # (batch_size, n_classes)
-
-        print(x)
         
         return x

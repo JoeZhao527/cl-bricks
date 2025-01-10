@@ -16,10 +16,10 @@ scheduler:
 net:
   _target_: src.models.components.resnet.ResNet
   layers:
-    - 3
-    - 4
-    - 6
-    - 3
+    - 2
+    - 2
+    - 2
+    - 2
   input_channels: 1
   n_classes: 94
 
