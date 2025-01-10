@@ -51,7 +51,7 @@ class BasicBlock(nn.Module):
 # ------------------------
 
 class ResNet(nn.Module):
-    def __init__(self, block, layers, n_classes=94, input_channels=1):
+    def __init__(self, layers, block=BasicBlock, n_classes=94, input_channels=1):
         super(ResNet, self).__init__()
         self.in_channels = 64
 
@@ -111,6 +111,8 @@ class ResNet(nn.Module):
                 nn.init.constant_(m.bias, 0)
 
     def forward(self, x):
+        x = x.unsqueeze(dim=1)
+
         # Input x: (batch_size, 1, 128, 64)
         x = self.conv1(x)      # (batch_size, 64, H/2, W/2)
         x = self.bn1(x)
@@ -126,4 +128,6 @@ class ResNet(nn.Module):
         x = torch.flatten(x, 1)  # (batch_size, 512)
         x = self.fc(x)         # (batch_size, n_classes)
 
+        print(x)
+        
         return x
