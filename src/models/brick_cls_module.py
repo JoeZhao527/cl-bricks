@@ -6,8 +6,8 @@ from torchmetrics import MaxMetric, MeanMetric
 from torchmetrics.classification.accuracy import Accuracy
 
 
-class MNISTLitModule(LightningModule):
-    """Example of a `LightningModule` for MNIST classification.
+class BrickClsModule(LightningModule):
+    """`BrickClsModule` for Brick Spectrogram classification.
 
     A `LightningModule` implements 8 key methods:
 
@@ -64,9 +64,9 @@ class MNISTLitModule(LightningModule):
         self.criterion = torch.nn.CrossEntropyLoss()
 
         # metric objects for calculating and averaging accuracy across batches
-        self.train_acc = Accuracy(task="multiclass", num_classes=10)
-        self.val_acc = Accuracy(task="multiclass", num_classes=10)
-        self.test_acc = Accuracy(task="multiclass", num_classes=10)
+        self.train_acc = Accuracy(task="multiclass", num_classes=94)
+        self.val_acc = Accuracy(task="multiclass", num_classes=94)
+        self.test_acc = Accuracy(task="multiclass", num_classes=94)
 
         # for averaging loss across batches
         self.train_loss = MeanMetric()
@@ -107,8 +107,8 @@ class MNISTLitModule(LightningModule):
         x, y = batch
         logits = self.forward(x)
         loss = self.criterion(logits, y)
-        preds = torch.argmax(logits, dim=1)
-        return loss, preds, y
+        # preds = torch.argmax(logits, dim=1)
+        return loss, logits, y
 
     def training_step(
         self, batch: Tuple[torch.Tensor, torch.Tensor], batch_idx: int
@@ -125,7 +125,7 @@ class MNISTLitModule(LightningModule):
         # update and log metrics
         self.train_loss(loss)
         self.train_acc(preds, targets)
-        self.log("train/loss", self.train_loss, on_step=False, on_epoch=True, prog_bar=True)
+        self.log("train/loss", self.train_loss, on_step=True, on_epoch=True, prog_bar=True)
         self.log("train/acc", self.train_acc, on_step=False, on_epoch=True, prog_bar=True)
 
         # return loss or backpropagation will fail

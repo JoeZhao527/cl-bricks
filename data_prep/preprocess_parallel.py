@@ -108,30 +108,34 @@ def tsfel_feature_extraction(signal: np.ndarray, timestamp: np.ndarray, tsfel_fr
     Extract signal features with tsfel
     """
     # interpolate values
-    dt = 4838397.067/85922
-    ts1 = np.linspace(timestamp.min(), timestamp.max(), num=len(signal))
-    ts2 = np.arange(timestamp.min(), timestamp.max(), dt)
+    # dt = 4838397.067/85922
+    # ts1 = np.linspace(timestamp.min(), timestamp.max(), num=len(signal))
+    # ts2 = np.arange(timestamp.min(), timestamp.max(), dt)
 
-    interpolator = interp1d(timestamp, signal, kind='nearest')
-    values_fixed = interpolator(ts1)
-    values_forfreq = interpolator(ts2)
+    # interpolator = interp1d(timestamp, signal, kind='nearest')
+    # values_fixed = interpolator(ts1)
+    # values_forfreq = interpolator(ts2)
     
     # statistical and temporal domain
     cfg1 = tsfel.get_features_by_domain(domain=['statistical', 'temporal'])
     features_df_1 = tsfel.time_series_features_extractor(
-        cfg1, values_fixed,
-        fs=1/((ts1[1]-ts1[0])/3600),
-        verbose=False
-    )
-
-    # frequency domain
-    cfg2 = tsfel_freq_cfg
-    features_df_2 = tsfel.time_series_features_extractor(
-        cfg2, values_forfreq,
-        fs=1/((ts2[1]-ts2[0])/3600),
+        # cfg1, values_fixed,
+        # fs=1/((ts1[1]-ts1[0])/3600),
+        cfg1, signal,
+        fs=timestamp[1]-timestamp[0],
         verbose=False
     )
     
+    # frequency domain
+    cfg2 = tsfel_freq_cfg
+    features_df_2 = tsfel.time_series_features_extractor(
+        # cfg2, values_forfreq,
+        # fs=1/((ts2[1]-ts2[0])/3600),
+        cfg2, signal,
+        fs=timestamp[1]-timestamp[0],
+        verbose=False
+    )
+
     # TSFEL returns a DataFrame with one row per signal. Convert that row to a dictionary.
     # If signal is 1D, you typically get one row. We take .iloc[0] to get that row as a Series.
     features_dict = {
@@ -270,7 +274,7 @@ def preprocessing(trn_x_path, trn_y_path, tst_x_path, split_num: int, output_dir
     # Preprocess training data
     train_features = preprocess_data(
         zip_path=trn_x_path,
-        filenames=train_filenames,
+        filenames=train_filenames[1100:1150],
         split_num=split_num,
         feature_keys=list(feat_keys),
         tsfel_freq_cfg=tsfel_freq_cfg,
@@ -281,21 +285,21 @@ def preprocessing(trn_x_path, trn_y_path, tst_x_path, split_num: int, output_dir
     # Save training features
     np.save(os.path.join(output_dir, "train_features.npy"), train_features)
     
-    # Preprocess testing data
-    with ZipFile(tst_x_path, 'r') as test_zip:
-        test_filenames = test_zip.namelist()[1:]  # Assuming first file is not a data file
+    # # Preprocess testing data
+    # with ZipFile(tst_x_path, 'r') as test_zip:
+    #     test_filenames = test_zip.namelist()[1:]  # Assuming first file is not a data file
     
-    test_features = preprocess_data(
-        zip_path=tst_x_path,
-        filenames=test_filenames,
-        split_num=split_num,
-        feature_keys=list(feat_keys),
-        tsfel_freq_cfg=tsfel_freq_cfg,
-        num_workers=num_workers
-    )
+    # test_features = preprocess_data(
+    #     zip_path=tst_x_path,
+    #     filenames=test_filenames,
+    #     split_num=split_num,
+    #     feature_keys=list(feat_keys),
+    #     tsfel_freq_cfg=tsfel_freq_cfg,
+    #     num_workers=num_workers
+    # )
     
-    # Save testing features
-    np.save(os.path.join(output_dir, "test_features.npy"), test_features)
+    # # Save testing features
+    # np.save(os.path.join(output_dir, "test_features.npy"), test_features)
 
 def parse_args():
     parser = argparse.ArgumentParser(
@@ -326,7 +330,7 @@ def parse_args():
     parser.add_argument(
         '--split_num',
         type=int,
-        default=3,
+        default=1,
         help='Number of splits for feature extraction (default: 3).'
     )
     

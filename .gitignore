@@ -152,3 +152,8 @@ configs/local/default.yaml
 
 # Aim logging
 .aim
+
+nohup.out
+processed/
+features/
+*.lmdb
