@@ -175,7 +175,7 @@ if __name__ == '__main__':
     
     # Estimate map_size. Adjust based on your dataset size.
     # For example, 50GB:
-    map_size = 20 * 1024 ** 3  # 50 GB
+    map_size = 40 * 1024 ** 3  # 50 GB
     
     # Create LMDB environment
     env = lmdb.open(

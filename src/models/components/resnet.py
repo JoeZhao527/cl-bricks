@@ -77,7 +77,6 @@ class ResNet(nn.Module):
         self.stat_encoder = nn.Sequential(
             nn.Linear(stat_dim, 256),
             nn.Tanh(),
-            nn.Dropout(p=0.5),
             nn.Linear(256, 256),
             nn.Tanh(),
         )
@@ -85,7 +84,6 @@ class ResNet(nn.Module):
         self.fc = nn.Sequential(
             nn.Linear(512, 256),
             nn.ReLU(),
-            nn.Dropout(p=0.5),
             nn.Linear(256, 256),
             nn.ReLU()
         )
@@ -93,7 +91,7 @@ class ResNet(nn.Module):
         self.readout = nn.Sequential(
             nn.Linear(512, 256),
             nn.ReLU(),
-            nn.Dropout(p=0.5),
+            nn.Dropout(0.5),
             nn.Linear(256, n_classes)
         )
 
