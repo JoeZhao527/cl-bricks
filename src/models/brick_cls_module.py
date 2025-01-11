@@ -108,13 +108,11 @@ class BrickClsModule(LightningModule):
         x, y = batch
         logits = self.forward(x)
         logits = torch.sigmoid(logits)
-        preds = torch.softmax(logits, dim=0)
-
         loss = self.criterion(logits, y)
         
-        print(preds[0])
+        print(logits[0])
         print(y[0])
-        return loss, preds, y
+        return loss, logits, y
 
     def training_step(
         self, batch: Tuple[torch.Tensor, torch.Tensor], batch_idx: int
