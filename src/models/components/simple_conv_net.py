@@ -10,7 +10,7 @@ import numpy as np
 # ------------------------
 
 class SimpleCNN(nn.Module):
-    def __init__(self, n_classes=94):
+    def __init__(self, n_classes=94, stat_dim=162):
         super(SimpleCNN, self).__init__()
         # Convolutional Layer 1
         self.conv1 = nn.Conv2d(in_channels=1, out_channels=16, kernel_size=3, padding=1)  # Output: (16, 128, 64)
@@ -19,18 +19,35 @@ class SimpleCNN(nn.Module):
         self.conv2 = nn.Conv2d(in_channels=16, out_channels=32, kernel_size=3, padding=1)  # Output: (32, 64, 32)
 
         # Fully Connected Layers
-        self.readout = nn.Sequential(
+        self.fc = nn.Sequential(
             nn.Linear(32 * 32 * 16, 1024),
             nn.ReLU(),
             nn.Dropout(p=0.5),
             nn.Linear(1024, 256),
             nn.ReLU(),
-            nn.Linear(256, n_classes),
+        )
+
+        # Statistical info encoder
+        self.stat_encoder = nn.Sequential(
+            nn.Linear(stat_dim, 256),
+            nn.Tanh(),
+            nn.Dropout(p=0.5),
+            nn.Linear(256, 256),
+            nn.Tanh(),
+        )
+
+        self.readout = nn.Sequential(
+            nn.Linear(512, 256),
+            nn.ReLU(),
+            nn.Dropout(),
+            nn.Linear(256, n_classes)
         )
     
     def forward(self, x):
+        spec_feat, stat_feat = x
+
         # Input x: (batch_size, 1, 128, 64)
-        x = x.unsqueeze(dim=1)
+        x = spec_feat.unsqueeze(dim=1)
         
         x = self.conv1(x)  # (batch_size, 16, 128, 64)
         x = F.relu(x)
@@ -41,6 +58,10 @@ class SimpleCNN(nn.Module):
         x = self.pool(x)  # (batch_size, 32, 32, 16)
         
         x = x.view(x.size(0), -1)  # Flatten: (batch_size, 32*32*16)
-        x = self.readout(x)
+        x = self.fc(x)
 
-        return x
+        z = self.stat_encoder(stat_feat)
+
+        out = self.readout(torch.concat([x, z], dim=1))
+
+        return out

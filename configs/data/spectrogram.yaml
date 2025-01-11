@@ -8,6 +8,7 @@ dataset:
   zip_path: ./downloads/train_X_v0.1.0.zip
   feat_path: ./notebooks/spec_feat.lmdb
   label_path: ./downloads/train_y_v0.1.0.csv
+  stat_path: ./downloads/train_data_features_v3_fixed/train_features_full_v3.csv
   
 
 # trn_y_path = "../downloads/train_y_v0.1.0.csv"
