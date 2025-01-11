@@ -110,8 +110,6 @@ class BrickClsModule(LightningModule):
         logits = torch.sigmoid(logits)
         loss = self.criterion(logits, y)
         
-        print(logits[0])
-        print(y[0])
         return loss, logits, y
 
     def training_step(
