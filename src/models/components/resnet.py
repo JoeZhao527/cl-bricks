@@ -72,7 +72,13 @@ class ResNet(nn.Module):
 
         # Adaptive average pooling and fully connected layer
         self.avgpool = nn.AdaptiveAvgPool2d((1, 1))  # Global average pooling
-        self.fc = nn.Linear(512 * block.expansion, n_classes)
+        # self.fc = nn.Linear(512 * block.expansion, n_classes)
+        self.readout = nn.Sequential(
+            nn.Linear(512, 256),
+            nn.ReLU(),
+            nn.Dropout(p=0.5),
+            nn.Linear(256, n_classes)
+        )
 
         # Initialize weights
         self._initialize_weights()
@@ -126,6 +132,6 @@ class ResNet(nn.Module):
 
         x = self.avgpool(x)    # (batch_size, 512, 1, 1)
         x = torch.flatten(x, 1)  # (batch_size, 512)
-        x = self.fc(x)         # (batch_size, n_classes)
-        
+        x = self.readout(x)         # (batch_size, n_classes)
+
         return x
