@@ -91,7 +91,7 @@ class ResNet(nn.Module):
         self.readout = nn.Sequential(
             nn.Linear(512, 256),
             nn.ReLU(),
-            nn.Dropout(0.5),
+            nn.Dropout(0.2),
             nn.Linear(256, n_classes)
         )
 
