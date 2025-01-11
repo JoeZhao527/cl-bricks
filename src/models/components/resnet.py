@@ -51,7 +51,7 @@ class BasicBlock(nn.Module):
 # ------------------------
 
 class ResNet(nn.Module):
-    def __init__(self, layers, block=BasicBlock, n_classes=94, input_channels=1):
+    def __init__(self, layers, block=BasicBlock, n_classes=94, input_channels=1, stat_dim=162):
         super(ResNet, self).__init__()
         self.in_channels = 64
 
@@ -72,7 +72,24 @@ class ResNet(nn.Module):
 
         # Adaptive average pooling and fully connected layer
         self.avgpool = nn.AdaptiveAvgPool2d((1, 1))  # Global average pooling
-        # self.fc = nn.Linear(512 * block.expansion, n_classes)
+        
+        # Statistical info encoder
+        self.stat_encoder = nn.Sequential(
+            nn.Linear(stat_dim, 256),
+            nn.Tanh(),
+            nn.Dropout(p=0.5),
+            nn.Linear(256, 256),
+            nn.Tanh(),
+        )
+
+        self.fc = nn.Sequential(
+            nn.Linear(512, 256),
+            nn.ReLU(),
+            nn.Dropout(p=0.5),
+            nn.Linear(256, 256),
+            nn.ReLU()
+        )
+
         self.readout = nn.Sequential(
             nn.Linear(512, 256),
             nn.ReLU(),
@@ -117,7 +134,9 @@ class ResNet(nn.Module):
                 nn.init.constant_(m.bias, 0)
 
     def forward(self, x):
-        x = x.unsqueeze(dim=1)
+        spec_feat, stat_feat = x
+
+        x = spec_feat.unsqueeze(dim=1)
 
         # Input x: (batch_size, 1, 128, 64)
         x = self.conv1(x)      # (batch_size, 64, H/2, W/2)
@@ -132,6 +151,9 @@ class ResNet(nn.Module):
 
         x = self.avgpool(x)    # (batch_size, 512, 1, 1)
         x = torch.flatten(x, 1)  # (batch_size, 512)
-        x = self.readout(x)         # (batch_size, n_classes)
+        x = self.fc(x)         # (batch_size, 256)
 
-        return x
+        z = self.stat_encoder(stat_feat)
+        out = self.readout(torch.concat([x, z], dim=1))
+
+        return out

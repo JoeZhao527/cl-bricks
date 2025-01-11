@@ -15,21 +15,21 @@ from tqdm import tqdm
 from multiprocessing import Pool
 from functools import partial
 
-from src.data.components.featurizer import timestamp_feature_extraction, signal_stat_feature_extraction
+# from src.data.components.featurizer import timestamp_feature_extraction, signal_stat_feature_extraction
 
-def get_timespace_feature(datapoint) -> Tuple[str, torch.Tensor]:
-    timestamp = datapoint['t'].astype('timedelta64[s]').astype(int)
-    timestamp_feat = timestamp_feature_extraction(timestamp)
+# def get_timespace_feature(datapoint) -> Tuple[str, torch.Tensor]:
+#     timestamp = datapoint['t'].astype('timedelta64[s]').astype(int)
+#     timestamp_feat = timestamp_feature_extraction(timestamp)
 
-    signal = datapoint['v']
-    signal_feat = signal_stat_feature_extraction(signal)
+#     signal = datapoint['v']
+#     signal_feat = signal_stat_feature_extraction(signal)
 
-    timespace_feat = np.concatenate([
-        np.array(list(timestamp_feat.values())),
-        np.array(list(signal_feat.values())),
-    ])
+#     timespace_feat = np.concatenate([
+#         np.array(list(timestamp_feat.values())),
+#         np.array(list(signal_feat.values())),
+#     ])
     
-    return torch.Tensor(timespace_feat)
+#     return torch.Tensor(timespace_feat)
 
 def collate_fn(batch, target_dim: Tuple[int, int] = (128, 64)):
     # target_dim max is (129, 71)
@@ -132,11 +132,6 @@ class BrickDataset(Dataset):
             }
         else:
             self.label = {}
-
-        # self.timespace_features = {
-        #     f_name: torch.Tensor(get_timespace_feature(pickle.loads(zipf.read(f_name))))
-        #     for f_name in tqdm(filename_list, desc="Preparing timespace feature")
-        # }
         
     def __len__(self):
         return len(self.filename_list)
