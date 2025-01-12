@@ -17,7 +17,7 @@ net:
   _target_: src.models.transformer.spectrogram_classifier.Classifier
   encoder:
     _target_: src.models.transformer.spectrogram_encoder.TransformerEncoder
-    model_dim: 64
+    model_dim: 256
     num_heads: 4
     num_layers: 4
     ff_dim: 512
