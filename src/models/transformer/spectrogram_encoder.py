@@ -23,7 +23,7 @@ class TransformerEncoder(nn.Module):
         self.positional_encoding = nn.Embedding(self.num_patches, model_dim)
         
         # Patch Embedding Layer
-        self.patch_embedding = nn.Conv2d(1, model_dim, kernel_size=patch_size, stride=patch_size // 2)
+        self.patch_embedding = nn.Conv2d(1, model_dim, kernel_size=patch_size, stride=patch_size - 2)
         
         # Transformer Encoder Layer
         encoder_layers = nn.TransformerEncoderLayer(d_model=model_dim, 
