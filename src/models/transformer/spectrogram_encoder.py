@@ -43,6 +43,8 @@ class TransformerEncoder(nn.Module):
         # x = x.permute(0, 2, 1)  # Change to (batch_size, freq_len, seq_len) to fit Conv1D
         x = self.patch_embedding(x)  # Output shape: (batch_size, model_dim, num_patches)
         
+        print(x.shape)
+        exit(0)
         # Step 2: Reshape the output of Conv1d to (batch_size, num_patches, model_dim)
         # x = x.permute(0, 2, 1)  # Output shape: (batch_size, num_patches, model_dim)
         
