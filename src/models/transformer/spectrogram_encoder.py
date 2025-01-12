@@ -3,23 +3,27 @@ import torch.nn as nn
 import torch.nn.functional as F
 
 class TransformerEncoder(nn.Module):
-    def __init__(self, 
-                 input_dim,          # Dimension of input features
+    def __init__(self,
                  model_dim,          # Dimension of the model (embedding size)
                  num_heads,          # Number of attention heads in multi-head attention
                  num_layers,         # Number of encoder layers
                  ff_dim,             # Dimension of the feed-forward layer
+                 patch_size,         # Size of the patches to split spectrograms into
                  dropout=0.1,        # Dropout rate
-                 max_len=80):      # Maximum sequence length (for positional encoding)
+                 max_len=128):        # Maximum sequence length (for positional encoding)
         super(TransformerEncoder, self).__init__()
         
         self.model_dim = model_dim
+        self.patch_size = patch_size
+        
+        # Calculate the number of patches
+        self.num_patches = (max_len // patch_size)  # assuming input_dim is divisible by patch_size
         
         # Positional Encoding
-        self.positional_encoding = nn.Embedding(max_len, model_dim)
+        self.positional_encoding = nn.Embedding(self.num_patches, model_dim)
         
-        # Input embedding layer
-        self.embedding = nn.Linear(input_dim, model_dim)
+        # Patch Embedding Layer
+        self.patch_embedding = nn.Conv1d(1, model_dim, kernel_size=patch_size, stride=patch_size // 2)
         
         # Transformer Encoder Layer
         encoder_layers = nn.TransformerEncoderLayer(d_model=model_dim, 
@@ -30,21 +34,28 @@ class TransformerEncoder(nn.Module):
         
     def forward(self, x):
         """
-        x: Input tensor of shape (batch_size, seq_len, input_dim)
+        x: Input tensor of shape (batch_size, time-domain, frequency-domain)
         """
-        # Adding positional encoding
-        batch_size, seq_len, _ = x.shape
-        position = torch.arange(0, seq_len).unsqueeze(0).repeat(batch_size, 1).to(x.device)
-        x = self.embedding(x) + self.positional_encoding(position)
+        batch_size, _, _ = x.shape
         
-        # Reshape to (seq_len, batch_size, model_dim) as required by the transformer
-        x = x.permute(1, 0, 2)  # (seq_len, batch_size, model_dim)
+        # Step 1: Patchify the spectrogram (x is of shape (batch_size, seq_len, freq_len))
+        # x = x.permute(0, 2, 1)  # Change to (batch_size, freq_len, seq_len) to fit Conv1D
+        x = self.patch_embedding(x)  # Output shape: (batch_size, model_dim, num_patches)
         
-        # Pass through the transformer encoder
+        # Step 2: Reshape the output of Conv1d to (batch_size, num_patches, model_dim)
+        # x = x.permute(0, 2, 1)  # Output shape: (batch_size, num_patches, model_dim)
+        
+        # Step 3: Add positional encoding
+        position = torch.arange(0, self.num_patches).unsqueeze(0).repeat(batch_size, 1).to(x.device)
+        x = x + self.positional_encoding(position)  # Add positional encoding
+        
+        # Step 4: Reshape to (num_patches, batch_size, model_dim) as required by Transformer
+        x = x.permute(1, 0, 2)  # (num_patches, batch_size, model_dim)
+        
+        # Step 5: Pass through the Transformer Encoder
         x = self.transformer_encoder(x)
         
-        # You can apply additional processing here (e.g., pooling, classification layer, etc.)
-        # Here, we'll simply take the mean of the sequence
+        # Step 6: Pooling (taking the mean over the sequence dimension)
         out = x.mean(dim=0)  # (batch_size, model_dim)
         
         return out
