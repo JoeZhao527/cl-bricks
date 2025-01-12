@@ -19,7 +19,7 @@ class Classifier(nn.Module):
             nn.ReLU(),
             nn.Linear(hidden_dim, hidden_dim),
             nn.ReLU(),
-            nn.Dropout(0.5),
+            nn.Dropout(0.2),
             nn.Linear(hidden_dim, n_classes)
         )
     
@@ -27,7 +27,7 @@ class Classifier(nn.Module):
         spec_feat, stat_feat = x
 
         spec_feat = spec_feat.permute(0, 2, 1)
-        
+
         encoded = self.encoder(spec_feat)
 
         out = self.readout(encoded)
