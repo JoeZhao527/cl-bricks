@@ -17,13 +17,13 @@ class TransformerEncoder(nn.Module):
         self.patch_size = patch_size
         
         # Calculate the number of patches
-        self.num_patches = (max_len // (patch_size - 2)) ** 2  # assuming input_dim is divisible by patch_size
+        self.num_patches = (max_len // (patch_size)) ** 2  # assuming input_dim is divisible by patch_size
         
         # Positional Encoding
         self.positional_encoding = nn.Embedding(self.num_patches, model_dim)
         
         # Patch Embedding Layer
-        self.patch_embedding = nn.Conv2d(1, model_dim, kernel_size=patch_size, stride=patch_size - 2)
+        self.patch_embedding = nn.Conv2d(1, model_dim, kernel_size=patch_size, stride=patch_size)
         
         # Transformer Encoder Layer
         encoder_layers = nn.TransformerEncoderLayer(d_model=model_dim, 
