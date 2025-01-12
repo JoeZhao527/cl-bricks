@@ -17,7 +17,7 @@ class TransformerEncoder(nn.Module):
         self.patch_size = patch_size
         
         # Calculate the number of patches
-        self.num_patches = (max_len // patch_size)  # assuming input_dim is divisible by patch_size
+        self.num_patches = (max_len // (patch_size // 2)) ** 2  # assuming input_dim is divisible by patch_size
         
         # Positional Encoding
         self.positional_encoding = nn.Embedding(self.num_patches, model_dim)
