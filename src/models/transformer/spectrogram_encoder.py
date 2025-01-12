@@ -28,9 +28,6 @@ class TransformerEncoder(nn.Module):
                                                    dropout=dropout)
         self.transformer_encoder = nn.TransformerEncoder(encoder_layers, num_layers=num_layers)
         
-        # Output Layer (optional for final transformation)
-        self.fc_out = nn.Linear(model_dim, model_dim)
-        
     def forward(self, x):
         """
         x: Input tensor of shape (batch_size, seq_len, input_dim)
@@ -48,9 +45,6 @@ class TransformerEncoder(nn.Module):
         
         # You can apply additional processing here (e.g., pooling, classification layer, etc.)
         # Here, we'll simply take the mean of the sequence
-        x = x.mean(dim=0)  # (batch_size, model_dim)
-        
-        # Output layer (optional)
-        out = self.fc_out(x)
+        out = x.mean(dim=0)  # (batch_size, model_dim)
         
         return out
