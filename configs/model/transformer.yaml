@@ -23,7 +23,7 @@ net:
     ff_dim: 512
     patch_size: 7
     dropout: 0.1
-    max_len: 71
+    max_len: 128
   n_classes: 94
   hidden_dim: 512
 
