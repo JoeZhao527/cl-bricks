@@ -32,11 +32,12 @@ class TransformerEncoder(nn.Module):
                                                    dropout=dropout)
         self.transformer_encoder = nn.TransformerEncoder(encoder_layers, num_layers=num_layers)
         
-    def forward(self, x):
+    def forward(self, x: torch.Tensor):
         """
         x: Input tensor of shape (batch_size, time-domain, frequency-domain)
         """
         batch_size, _, _ = x.shape
+        x = x.unsqueeze(dim=1)
         
         # Step 1: Patchify the spectrogram (x is of shape (batch_size, seq_len, freq_len))
         # x = x.permute(0, 2, 1)  # Change to (batch_size, freq_len, seq_len) to fit Conv1D
