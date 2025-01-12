@@ -23,7 +23,7 @@ class TransformerEncoder(nn.Module):
         self.positional_encoding = nn.Embedding(self.num_patches, model_dim)
         
         # Patch Embedding Layer
-        self.patch_embedding = nn.Conv1d(1, model_dim, kernel_size=patch_size, stride=patch_size // 2)
+        self.patch_embedding = nn.Conv2d(1, model_dim, kernel_size=patch_size, stride=patch_size // 2)
         
         # Transformer Encoder Layer
         encoder_layers = nn.TransformerEncoderLayer(d_model=model_dim, 
@@ -38,7 +38,7 @@ class TransformerEncoder(nn.Module):
         """
         batch_size, _, _ = x.shape
         x = x.unsqueeze(dim=1)
-        
+
         # Step 1: Patchify the spectrogram (x is of shape (batch_size, seq_len, freq_len))
         # x = x.permute(0, 2, 1)  # Change to (batch_size, freq_len, seq_len) to fit Conv1D
         x = self.patch_embedding(x)  # Output shape: (batch_size, model_dim, num_patches)
