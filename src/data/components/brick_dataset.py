@@ -31,7 +31,7 @@ from functools import partial
     
 #     return torch.Tensor(timespace_feat)
 
-def collate_fn(batch, target_dim: Tuple[int, int] = (128, 64)):
+def collate_fn(batch, target_dim: Tuple[int, int] = (129, 64)):
     # target_dim max is (129, 71)
     
     # Unzip the batch into features and labels
@@ -41,6 +41,12 @@ def collate_fn(batch, target_dim: Tuple[int, int] = (128, 64)):
     
     padded_features = []
     target_height, target_width = target_dim  # Target dimensions
+    
+    max_len = 0
+    for feat in spec_feat:
+        max_len = max(feat.shape[1], max_len)
+    
+    target_width = max_len
     
     for idx, feat in enumerate(spec_feat):
         # Ensure the feature is a torch.Tensor
