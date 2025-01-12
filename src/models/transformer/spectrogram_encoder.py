@@ -45,7 +45,7 @@ class TransformerEncoder(nn.Module):
         x = x.reshape(batch_size, self.model_dim, -1)
         x = x.permute(0, 2, 1)
         
-        num_patches = x.shape[0]
+        num_patches = x.shape[1]
 
         # Add positional encoding
         position = torch.arange(0, num_patches).unsqueeze(0).repeat(batch_size, 1).to(x.device)
