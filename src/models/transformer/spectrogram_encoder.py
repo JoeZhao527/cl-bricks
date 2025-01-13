@@ -60,4 +60,5 @@ class TransformerEncoder(nn.Module):
         # Pooling (taking the mean over the sequence dimension)
         out = x.mean(dim=0)  # (batch_size, model_dim)
         
+        print(out)
         return out
