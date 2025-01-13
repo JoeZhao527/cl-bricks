@@ -45,6 +45,8 @@ class TransformerEncoder(nn.Module):
         x = x.reshape(batch_size, self.model_dim, -1)
         x = x.permute(0, 2, 1)
         
+        print(x[0, 0, :20])
+
         num_patches = x.shape[1]
 
         # Add positional encoding
@@ -53,8 +55,7 @@ class TransformerEncoder(nn.Module):
         
         # Reshape to (num_patches, batch_size, model_dim) as required by Transformer
         x = x.permute(1, 0, 2)  # (num_patches, batch_size, model_dim)
-        
-        print(x[0, 0, :])
+
         # Pass through the Transformer Encoder
         x = self.transformer_encoder(x)
         
