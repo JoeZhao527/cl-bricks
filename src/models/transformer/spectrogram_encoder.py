@@ -54,11 +54,11 @@ class TransformerEncoder(nn.Module):
         # Reshape to (num_patches, batch_size, model_dim) as required by Transformer
         x = x.permute(1, 0, 2)  # (num_patches, batch_size, model_dim)
         
+        print(x[0, 0, :])
         # Pass through the Transformer Encoder
         x = self.transformer_encoder(x)
         
         # Pooling (taking the mean over the sequence dimension)
         out = x.mean(dim=0)  # (batch_size, model_dim)
         
-        print(out)
         return out
