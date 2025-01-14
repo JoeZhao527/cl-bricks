@@ -68,17 +68,12 @@ class TransformerEncoder(nn.Module):
         x = x.permute(0, 2, 3, 1)
         batch_size, t_dim, f_dim, model_dim = x.shape
 
-        print(x[0, 1, 1, :20])
         # add positional embedding
-        pos_embedding = posemb_sincos_2d(
-            h = t_dim // self.patch_size,
-            w = f_dim // self.patch_size,
-            dim = model_dim
-        )
-        # x = x + pos_embedding.unsqueeze(0).repeat(batch_size, 1, 1, 1).to(x.device)
-        x = x + pos_embedding[:t_dim, :f_dim, :].unsqueeze(0).repeat(batch_size, 1, 1, 1).to(x.device)
+        print(x.shape)
+        print(self.pos_embedding.shape)
 
-        print(x[0, 1, 1, :20])
+        x = x + self.pos_embedding[:t_dim, :f_dim, :].unsqueeze(0).repeat(batch_size, 1, 1, 1).to(x.device)
+
         x = x.reshape(batch_size, -1, model_dim)
 
         # Reshape to (num_patches, batch_size, model_dim) as required by Transformer
