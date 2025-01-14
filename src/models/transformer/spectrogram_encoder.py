@@ -70,7 +70,13 @@ class TransformerEncoder(nn.Module):
 
         print(x[0, 1, 1, :20])
         # add positional embedding
-        x = x + self.pos_embedding[:t_dim, :f_dim, :].unsqueeze(0).repeat(batch_size, 1, 1, 1).to(x.device)
+        pos_embedding = posemb_sincos_2d(
+            h = t_dim // self.patch_size,
+            w = f_dim // self.patch_size,
+            dim = model_dim
+        )
+        x = x + pos_embedding.unsqueeze(0).repeat(batch_size, 1, 1, 1).to(x.device)
+        # x = x + self.pos_embedding[:t_dim, :f_dim, :].unsqueeze(0).repeat(batch_size, 1, 1, 1).to(x.device)
 
         print(x[0, 1, 1, :20])
         x = x.reshape(batch_size, -1, model_dim)
