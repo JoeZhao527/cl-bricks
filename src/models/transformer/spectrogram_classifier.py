@@ -19,7 +19,7 @@ class Classifier(nn.Module):
             nn.ReLU(),
             nn.Linear(hidden_dim, hidden_dim),
             nn.ReLU(),
-            nn.Dropout(0.2),
+            nn.Dropout(0.1),
             nn.Linear(hidden_dim, n_classes)
         )
     
