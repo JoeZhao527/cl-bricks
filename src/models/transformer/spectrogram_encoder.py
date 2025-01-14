@@ -60,28 +60,6 @@ class TransformerEncoder(nn.Module):
         """
         x: Input tensor of shape (batch_size, time-domain, frequency-domain)
         """
-        print("Input shape:", x.shape)  # e.g. (batch, time, freq) or (batch, freq, time)
-        x = x.unsqueeze(dim=1)
-        print("After unsqueeze:", x.shape)  # (batch, 1, time, freq) or ...
-        
-        x = self.patch_embedding(x)
-        print("After patch_embedding:", x.shape)  
-        # (batch, model_dim, t_dim=?, f_dim=?) – check that t_dim=?, f_dim=? matches your pos_embedding creation
-        
-        x = x.permute(0, 2, 3, 1)
-        print("After permute:", x.shape)
-        
-        batch_size, t_dim, f_dim, model_dim = x.shape
-        print(f"t_dim={t_dim}, f_dim={f_dim}, model_dim={model_dim}")
-        
-        # Then look at your pos_embedding
-        print("pos_embedding shape:", self.pos_embedding.shape)
-        # Should be (time_max_len//patch_size, freq_max_len//patch_size, model_dim)
-        
-        # Check they match:
-        assert t_dim <= self.pos_embedding.shape[0] and f_dim <= self.pos_embedding.shape[1], \
-            f"Shape mismatch: t_dim={t_dim}, f_dim={f_dim} vs pos_emb={self.pos_embedding.shape}"
-        
         x = x.unsqueeze(dim=1)
 
         # Patchify the spectrogram (x is of shape (batch_size, seq_len, freq_len))
@@ -93,6 +71,7 @@ class TransformerEncoder(nn.Module):
         # add positional embedding
         # x = x + self.pos_embedding[:t_dim, :f_dim, :].unsqueeze(0).repeat(batch_size, 1, 1, 1).to(x.device)
         x = x + self.pos_embedding[:t_dim, :f_dim, :].to(x.device)
+
 
         x = x.reshape(batch_size, -1, model_dim)
 
