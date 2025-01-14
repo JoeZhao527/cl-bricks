@@ -17,10 +17,10 @@ net:
   _target_: src.models.transformer.spectrogram_classifier.Classifier
   encoder:
     _target_: src.models.transformer.spectrogram_encoder.SpectrogramTransformerEncoder
-    model_dim: 256
+    model_dim: 64
     num_heads: 4
     num_layers: 12
-    ff_dim: 512
+    ff_dim: 256
     patch_size: 5
     dropout: 0.1
   n_classes: 94
