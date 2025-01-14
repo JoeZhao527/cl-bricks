@@ -46,7 +46,8 @@ class SpectrogramTransformerEncoder(nn.Module):
             dim = model_dim
         )
 
-        self.pos_embedding = nn.Parameter(pos_emb, requires_grad=True)
+        # self.pos_embedding = nn.Parameter(pos_emb, requires_grad=True)
+        self.pos_embedding = nn.Parameter(torch.zeros((1, time_max_len // patch_size, freq_max_len // patch_size)), requires_grad=True)
         
         # Patch Embedding Layer
         self.patch_embedding = nn.Conv2d(1, model_dim, kernel_size=patch_size, stride=patch_size)
