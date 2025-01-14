@@ -15,7 +15,7 @@ def posemb_sincos_2d(h, w, dim, temperature: int = 10000, dtype=torch.float32):
     pe = torch.cat((x.sin(), x.cos(), y.sin(), y.cos()), dim=1)  # shape (h*w, dim)
 
     # Reshape to (h, w, dim)
-    pe = pe.view(h, w, dim)
+    pe = pe.view(w, h, dim).permute(1, 0, 2)
     return pe.type(dtype)
 
 class SpectrogramTransformerEncoder(nn.Module):
@@ -47,7 +47,10 @@ class SpectrogramTransformerEncoder(nn.Module):
         )
 
         # self.pos_embedding = nn.Parameter(pos_emb, requires_grad=True)
-        self.pos_embedding = nn.Parameter(torch.zeros((1, time_max_len // patch_size, freq_max_len // patch_size)), requires_grad=True)
+        self.pos_embedding = nn.Parameter(
+            torch.zeros(1, time_max_len // patch_size, freq_max_len // patch_size, model_dim),
+            requires_grad=True
+        )
         
         # Patch Embedding Layer
         self.patch_embedding = nn.Conv2d(1, model_dim, kernel_size=patch_size, stride=patch_size)
@@ -73,6 +76,7 @@ class SpectrogramTransformerEncoder(nn.Module):
 
         # add positional embedding
         # x = x + self.pos_embedding[:t_dim, :f_dim, :].unsqueeze(0).repeat(batch_size, 1, 1, 1).to(x.device)
+        print(self.pos_embedding.shape)
         x = x + self.pos_embedding[:t_dim, :f_dim, :]
 
         x = x.reshape(batch_size, -1, model_dim)
