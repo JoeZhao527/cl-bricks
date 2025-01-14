@@ -40,11 +40,13 @@ class TransformerEncoder(nn.Module):
         # Positional Encoding
         # self.positional_encoding = nn.Embedding(self.num_patches, model_dim)
         # self.positional_encoding = posemb_sincos_2d(129//patch_size, 71//patch_size, model_dim)
-        self.pos_embedding = posemb_sincos_2d(
+        pos_emb = posemb_sincos_2d(
             h = time_max_len // patch_size,
             w = freq_max_len // patch_size,
             dim = model_dim
         )
+
+        self.pos_embedding = nn.Parameter(pos_emb, requires_grad=True)
         
         # Patch Embedding Layer
         self.patch_embedding = nn.Conv2d(1, model_dim, kernel_size=patch_size, stride=patch_size)

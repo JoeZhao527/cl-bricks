@@ -17,14 +17,14 @@ net:
   _target_: src.models.transformer.spectrogram_classifier.Classifier
   encoder:
     _target_: src.models.transformer.spectrogram_encoder.TransformerEncoder
-    model_dim: 512
+    model_dim: 256
     num_heads: 8
     num_layers: 16
-    ff_dim: 1024
+    ff_dim: 512
     patch_size: 5
     dropout: 0.1
   n_classes: 94
-  hidden_dim: 1024
+  hidden_dim: 512
 
 # compile model for faster training with pytorch 2.0
 compile: false
