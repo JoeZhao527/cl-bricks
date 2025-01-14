@@ -74,7 +74,6 @@ class TransformerEncoder(nn.Module):
         # x = x + self.pos_embedding[:t_dim, :f_dim, :].unsqueeze(0).repeat(batch_size, 1, 1, 1).to(x.device)
         x = x + self.pos_embedding[:t_dim, :f_dim, :].to(x.device)
 
-
         x = x.reshape(batch_size, -1, model_dim)
 
         # Reshape to (num_patches, batch_size, model_dim) as required by Transformer

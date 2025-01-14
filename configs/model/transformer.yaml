@@ -18,8 +18,8 @@ net:
   encoder:
     _target_: src.models.transformer.spectrogram_encoder.TransformerEncoder
     model_dim: 256
-    num_heads: 8
-    num_layers: 16
+    num_heads: 4
+    num_layers: 12
     ff_dim: 512
     patch_size: 5
     dropout: 0.1
