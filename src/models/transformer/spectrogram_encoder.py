@@ -18,7 +18,7 @@ def posemb_sincos_2d(h, w, dim, temperature: int = 10000, dtype=torch.float32):
     pe = pe.view(h, w, dim)
     return pe.type(dtype)
 
-class TransformerEncoder(nn.Module):
+class SpectrogramTransformerEncoder(nn.Module):
     def __init__(self,
                  model_dim,          # Dimension of the model (embedding size)
                  num_heads,          # Number of attention heads in multi-head attention
@@ -29,7 +29,7 @@ class TransformerEncoder(nn.Module):
                  freq_max_len=129,
                  time_max_len=71,
                  max_len=128):        # Maximum sequence length (for positional encoding)
-        super(TransformerEncoder, self).__init__()
+        super(SpectrogramTransformerEncoder, self).__init__()
         
         self.model_dim = model_dim
         self.patch_size = patch_size

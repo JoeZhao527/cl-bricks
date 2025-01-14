@@ -1,12 +1,12 @@
 import torch
 from torch import nn
-from src.models.transformer.spectrogram_encoder import TransformerEncoder
+from src.models.transformer.spectrogram_encoder import SpectrogramTransformerEncoder
 
 
 class Classifier(nn.Module):
     def __init__(
         self,
-        encoder: TransformerEncoder,
+        encoder: SpectrogramTransformerEncoder,
         n_classes: int = 94,
         hidden_dim: int = 256
     ):
