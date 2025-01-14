@@ -7,7 +7,7 @@ defaults:
   - override /data: spectrogram
   - override /model: transformer
   - override /callbacks: default
-  - override /trainer: cpu
+  - override /trainer: gpu
   - override /logger: tensorboard
 
 # all parameters below will be merged with parameters from default configurations set above
