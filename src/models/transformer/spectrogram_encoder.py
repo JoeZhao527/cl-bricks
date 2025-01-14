@@ -68,11 +68,11 @@ class TransformerEncoder(nn.Module):
         x = x.permute(0, 2, 3, 1)
         batch_size, t_dim, f_dim, model_dim = x.shape
 
-        print(x[0, 0, 0, :])
+        print(x[0, 0, 0, :20])
         # add positional embedding
         x = x + self.pos_embedding[:t_dim, :f_dim, :].unsqueeze(0).repeat(batch_size, 1, 1, 1).to(x.device)
-        
-        print(x[0, 0, 0, :])
+
+        print(x[0, 0, 0, :20])
         x = x.reshape(batch_size, -1, model_dim)
 
         # Reshape to (num_patches, batch_size, model_dim) as required by Transformer
