@@ -72,7 +72,7 @@ class TransformerEncoder(nn.Module):
 
         # add positional embedding
         # x = x + self.pos_embedding[:t_dim, :f_dim, :].unsqueeze(0).repeat(batch_size, 1, 1, 1).to(x.device)
-        x = x + self.pos_embedding[:t_dim, :f_dim, :].to(x.device)
+        x = x + self.pos_embedding[:t_dim, :f_dim, :]
 
         x = x.reshape(batch_size, -1, model_dim)
 
