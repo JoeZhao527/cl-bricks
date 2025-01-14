@@ -7,7 +7,7 @@ defaults:
   - override /data: spectrogram
   - override /model: transformer
   - override /callbacks: default
-  - override /trainer: gpu
+  - override /trainer: cpu
   - override /logger: tensorboard
 
 # all parameters below will be merged with parameters from default configurations set above
@@ -24,8 +24,8 @@ trainer:
 
 model:
   optimizer:
-    lr: 0.002
+    lr: 3.e-4
   compile: false
 
 data:
-  batch_size: 64
+  batch_size: 256

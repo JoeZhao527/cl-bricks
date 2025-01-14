@@ -47,7 +47,7 @@ def collate_fn(batch, target_dim: Tuple[int, int] = (129, 64)):
         max_len = max(feat.shape[1], max_len)
     
     target_width = max_len
-    
+
     for idx, feat in enumerate(spec_feat):
         # Ensure the feature is a torch.Tensor
         if not isinstance(feat, torch.Tensor):
