@@ -27,5 +27,13 @@ model:
     lr: 3.e-4
   compile: false
 
+model_checkpoint:
+  monitor: "val/loss"
+  mode: "min"
+
+early_stopping:
+  monitor: "val/loss"
+  mode: "min"
+
 data:
   batch_size: 128

@@ -16,9 +16,6 @@ from multiprocessing import Pool
 from functools import partial
 import random
 
-from src.utils import RankedLogger
-
-log = RankedLogger(__name__, rank_zero_only=True)
 
 def collate_fn(batch: List[torch.Tensor], target_dim: Tuple[int, int] = (128, 64)):
     """
@@ -149,6 +146,6 @@ class SSLBrickDataset(Dataset):
         nan_mask = torch.isnan(sxx_tensor)
         if nan_mask.any():
             torch.where(nan_mask, torch.zeros_like(sxx_tensor), sxx_tensor)
-            log.warning(f"{filename} spectrogram got nan value, filling with zero")
+            print(f"{filename} spectrogram got nan value, filling with zero")
 
         return sxx_tensor
