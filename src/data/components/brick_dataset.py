@@ -9,7 +9,7 @@ from zipfile import ZipFile
 import os
 import torch
 import torch.nn.functional as F
-from typing import Tuple
+from typing import Tuple, List
 import lmdb
 from tqdm import tqdm
 from multiprocessing import Pool

@@ -4,7 +4,7 @@ from pytorch_lightning import LightningDataModule
 from torch.utils.data import ConcatDataset, DataLoader, Dataset, random_split
 from torchvision.datasets import MNIST
 from torchvision.transforms import transforms
-from src.data.components.brick_dataset import collate_fn, BrickDataset
+from src.data.components.ssl_brick_dataset import collate_fn
 
 class BricksDataModule(LightningDataModule):
     """`LightningDataModule` for the Brick-by-Brick dataset.
@@ -47,7 +47,7 @@ class BricksDataModule(LightningDataModule):
     def __init__(
         self,
         data_dir: str = "data/",
-        train_val_test_split: Tuple[int, int, int] = (0.8, 0.1, 0.1),
+        train_val_test_split: Tuple[int, int, int] = (0.9, 0.05, 0.05),
         batch_size: int = 64,
         num_workers: int = 0,
         pin_memory: bool = False,
