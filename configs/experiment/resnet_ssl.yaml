@@ -7,7 +7,7 @@ defaults:
   - override /data: ssl_spectrogram
   - override /model: ssl_resnet
   - override /callbacks: default
-  - override /trainer: cpu
+  - override /trainer: gpu
   - override /logger: tensorboard
 
 # all parameters below will be merged with parameters from default configurations set above
