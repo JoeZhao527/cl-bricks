@@ -87,6 +87,10 @@ class BrickSSLModule(LightningModule):
         # The diagonal elements are the positive samples
         loss = loss_fn(similarity_matrix, labels)
 
+        if torch.isnan(loss).any():
+            print(loss)
+            print("Loss nan")
+            exit(0)
         return loss
 
     def training_step(
