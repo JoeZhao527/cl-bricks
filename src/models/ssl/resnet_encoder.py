@@ -134,18 +134,8 @@ class ResNet(nn.Module):
         return x
     
     def forward(self, x):
-        if torch.isnan(x).any():
-            print(x)
-            print("Input nan")
-            exit(0)
-
         x = x.unsqueeze(dim=1)
 
         out = self.encode(x)
-
-        if torch.isnan(out).any():
-            print(out)
-            print("Output nan")
-            exit(0)
 
         return out

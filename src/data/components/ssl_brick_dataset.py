@@ -16,6 +16,10 @@ from multiprocessing import Pool
 from functools import partial
 import random
 
+from src.utils import RankedLogger
+
+log = RankedLogger(__name__, rank_zero_only=True)
+
 def collate_fn(batch: List[torch.Tensor], target_dim: Tuple[int, int] = (128, 64)):
     """
     Collate function to generate a batch suitable for InfoNCE loss.
@@ -138,6 +142,11 @@ class SSLBrickDataset(Dataset):
         # Convert to tensor
         sxx_tensor = torch.tensor(sxx, dtype=torch.float32)
         
+        nan_mask = torch.isnan(sxx_tensor)
+        if nan_mask.any():
+            torch.where(nan_mask, torch.zeros_like(sxx_tensor), sxx_tensor)
+            log.warning(f"{filename} spectrogram got nan value, filling with zero")
+
         # 0-1 normalization
         f_min, f_max = torch.min(sxx_tensor), torch.max(sxx_tensor)
         sxx_tensor = (sxx_tensor - f_min) / (f_max - f_min + 1e-5)
