@@ -253,6 +253,10 @@ def align_and_combine_predictions(classifiers, test_preds_all, test_data, thresh
     
     return test_preds
 
+# Mode along axis 0 (columns)
+def mode_along_axis(arr, axis):
+    return np.array([np.unique(arr[:, i], return_counts=True) for i in range(arr.shape[axis])])
+
 if __name__ == '__main__':
     train_y_path = "../downloads/train_y_v0.1.0.csv"
     feature_path = "../prediction.pt"
@@ -330,11 +334,16 @@ if __name__ == '__main__':
     for i in range(5):
         print(f"Predicting level {i}")
         test_preds_all = make_predictions_with_models(prec_svm_classifiers[i], tst_feat)
-        print(test_preds_all)
-        test_preds.append(align_and_combine_predictions(prec_svm_classifiers[i], test_preds_all, tst_feat))
+        # print(test_preds_all)
+        # test_preds.append(align_and_combine_predictions(prec_svm_classifiers[i], test_preds_all, tst_feat))
+        test_preds = np.apply_along_axis(
+            lambda x: np.unique(x, return_counts=True)[0][np.argmax(np.unique(x, return_counts=True)[1])],
+            axis=0, arr=np.stack(test_preds_all, axis=0)
+        )
 
     # Convert to array and process None values
-    stacked = np.stack(test_preds).transpose()
+    # stacked = np.stack(test_preds).transpose()
+    stacked = test_preds.transpose()
     for row in tqdm(stacked):
         # Find first occurrence of 'None' if any
         none_idx = np.where(row == 'None')[0]
