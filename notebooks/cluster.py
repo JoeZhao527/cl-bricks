@@ -14,7 +14,7 @@ scaler = StandardScaler()
 data_normalized = scaler.fit_transform(data.numpy())
 
 # DBSCAN clustering (no need to specify the number of clusters)
-dbscan = DBSCAN(eps=0.5, min_samples=1000, n_jobs=12, verbose=True)
+dbscan = DBSCAN(eps=0.5, min_samples=1000, n_jobs=12)
 dbscan_labels = dbscan.fit_predict(data_normalized)
 
 # Convert DBSCAN labels to a tensor
