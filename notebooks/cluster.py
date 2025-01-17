@@ -7,7 +7,7 @@ import matplotlib.pyplot as plt
 
 from sklearn.cluster import DBSCAN
 
-data = torch.concat(torch.load("./prediction.pt"))[:10000]
+data = torch.concat(torch.load("./prediction.pt"))
 
 # Step 1: Normalize the data
 scaler = StandardScaler()
