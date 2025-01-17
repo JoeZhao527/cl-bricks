@@ -76,7 +76,8 @@ class BrickDataset(Dataset):
             self.label = {}
         
     def __len__(self):
-        return len(self.filename_list)
+        _length = len(self.filename_list) if not self.inference_set else len(self.all_feat)
+        return _length
     
     def __getitem__(self, index):
         if not self.inference_set:
