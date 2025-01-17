@@ -338,7 +338,7 @@ if __name__ == '__main__':
         # test_preds.append(align_and_combine_predictions(prec_svm_classifiers[i], test_preds_all, tst_feat))
         test_preds = np.apply_along_axis(
             lambda x: np.unique(x, return_counts=True)[0][np.argmax(np.unique(x, return_counts=True)[1])],
-            axis=0, arr=np.stack(test_preds_all, axis=0)
+            axis=1, arr=np.stack(test_preds_all, axis=0)
         )
     print(np.stack(test_preds_all, axis=0))
     print(test_preds)
