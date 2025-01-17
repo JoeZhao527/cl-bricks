@@ -7,14 +7,14 @@ import matplotlib.pyplot as plt
 
 from sklearn.cluster import DBSCAN
 
-data = torch.concat(torch.load("./prediction.pt"))[:20000]
+data = torch.concat(torch.load("./prediction.pt"))[:10000]
 
 # Step 1: Normalize the data
 scaler = StandardScaler()
 data_normalized = scaler.fit_transform(data.numpy())
 
 # DBSCAN clustering (no need to specify the number of clusters)
-dbscan = DBSCAN(eps=0.5, min_samples=100, n_jobs=12)
+dbscan = DBSCAN(eps=0.5, min_samples=10, n_jobs=12)
 dbscan_labels = dbscan.fit_predict(data_normalized)
 
 # Convert DBSCAN labels to a tensor
