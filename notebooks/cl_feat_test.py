@@ -232,7 +232,7 @@ def align_and_combine_predictions(classifiers, test_preds_all, test_data, thresh
         # Create a mapping to align predictions with common classes
         pred_dict = {_cls: idx for idx, _cls in enumerate(clf.classes_)}
         aligned_pred = np.zeros((len(test_data), len(all_classes)))
-        
+        print(aligned_pred)
         for i, _cls in enumerate(all_classes):
             if _cls in pred_dict:
                 aligned_pred[:, i] = pred[:, pred_dict[_cls]]
