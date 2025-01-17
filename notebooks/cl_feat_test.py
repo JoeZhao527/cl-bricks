@@ -253,16 +253,12 @@ def align_and_combine_predictions(classifiers, test_preds_all, test_data, thresh
     
     return test_preds
 
-# Mode along axis 0 (columns)
-def mode_along_axis(arr, axis):
-    return np.array([np.unique(arr[:, i], return_counts=True) for i in range(arr.shape[axis])])
-
 if __name__ == '__main__':
     train_y_path = "../downloads/train_y_v0.1.0.csv"
     feature_path = "../prediction.pt"
     test_x_path = "../downloads/test_X_v0.1.0.zip"
     dev = True
-    n_fold_cv = 2
+    n_fold_cv = 10
 
     train_y = pd.read_csv(train_y_path)
 
@@ -325,7 +321,7 @@ if __name__ == '__main__':
 
     for i in range(5):
         print(f"Training level {i}")
-        _classifiers, _scores, _val_predictions = train_svm_classifier(trn_feat, np.array([x[i] for x in padded_label]), folds, drop_none=False)
+        _classifiers, _scores, _val_predictions = train_svm_classifier(trn_feat, np.array([x[i] for x in padded_label]), folds[:2], drop_none=False)
         prec_svm_classifiers.append(_classifiers)
         prec_scores.append(_scores)
         prec_svm_val_predictions.append(_val_predictions)
@@ -335,8 +331,9 @@ if __name__ == '__main__':
         print(f"Predicting level {i}")
         test_preds_all = make_predictions_with_models(prec_svm_classifiers[i], tst_feat)
         # test_preds.append(align_and_combine_predictions(prec_svm_classifiers[i], test_preds_all, tst_feat))
-        print(test_preds_all)
-        test_preds.append(mode_along_axis(arr=np.stack(test_preds_all, axis=0), axis=0))
+        # print(test_preds_all)
+        # test_preds.append(mode_along_axis(arr=np.stack(test_preds_all, axis=0), axis=0))
+        test_preds.append(test_preds_all[0])
 
     # Convert to array and process None values
     stacked = np.stack(test_preds).transpose()
