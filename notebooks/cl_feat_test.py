@@ -232,7 +232,7 @@ def align_and_combine_predictions(classifiers, test_preds_all, test_data, thresh
         # Create a mapping to align predictions with common classes
         pred_dict = {_cls: idx for idx, _cls in enumerate(clf.classes_)}
         aligned_pred = np.zeros((len(test_data), len(all_classes)))
-        print(pred)
+
         for i, _cls in enumerate(all_classes):
             if _cls in pred_dict:
                 aligned_pred[:, i] = pred[:, pred_dict[_cls]]
@@ -330,6 +330,7 @@ if __name__ == '__main__':
     for i in range(5):
         print(f"Predicting level {i}")
         test_preds_all = make_predictions_with_models(prec_svm_classifiers[i], tst_feat)
+        print(test_preds_all)
         test_preds.append(align_and_combine_predictions(prec_svm_classifiers[i], test_preds_all, tst_feat))
 
     # Convert to array and process None values
