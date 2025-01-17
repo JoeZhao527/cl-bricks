@@ -293,6 +293,8 @@ if __name__ == '__main__':
         i+1: LEVEL_LABELS[i] for i in range(5)
     }
 
+    print(tiers)
+    
     def get_tier(label):
         for tier_num, tier_list in tiers.items():
             if label in tier_list:
