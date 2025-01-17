@@ -64,7 +64,7 @@ class BrickDataset(Dataset):
         }
 
         # Prepare labels
-        if inference_set != None:
+        if not inference_set:
             self.label = {
                 f_name: (torch.tensor(label[f_name].astype(int)) >= 0).float()
                 for f_name in filename_list
