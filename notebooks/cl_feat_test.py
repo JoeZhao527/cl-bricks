@@ -340,11 +340,11 @@ if __name__ == '__main__':
             lambda x: np.unique(x, return_counts=True)[0][np.argmax(np.unique(x, return_counts=True)[1])],
             axis=0, arr=np.stack(test_preds_all, axis=0)
         )
-
+    print(np.stack(test_preds_all, axis=0))
+    print(test_preds)
     # Convert to array and process None values
     # stacked = np.stack(test_preds).transpose()
     stacked = test_preds.transpose()
-    print(stacked)
     for row in tqdm(stacked):
         # Find first occurrence of 'None' if any
         none_idx = np.where(row == 'None')[0]
