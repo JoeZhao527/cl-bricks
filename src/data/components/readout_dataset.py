@@ -45,7 +45,6 @@ class BrickDataset(Dataset):
         label_df = pd.read_csv(label_path)
         label = {"train_X/" + rec[0]: rec[1:] for rec in label_df.values}
 
-
         filename_list = list(zipf.namelist()[1:])
         self.filename_list = filename_list
 
@@ -56,8 +55,12 @@ class BrickDataset(Dataset):
         }
 
         all_feat = torch.concat(torch.load(feat_path), dim=0)
-        all_feat = all_feat[len(label_df):] if inference_set else all_feat[:len(label_df)]
+        if not inference_set:
+            all_feat = all_feat[:len(label_df)]
 
+        self.all_feat = all_feat
+        self.inference_set = inference_set
+        
         self.spec_feat = {
             f_name: all_feat[i]
             for i, f_name in enumerate(filename_list)
@@ -76,9 +79,14 @@ class BrickDataset(Dataset):
         return len(self.filename_list)
     
     def __getitem__(self, index):
-        filename = self.filename_list[index]
-        label = self.label.get(filename, torch.Tensor([0]))
-        timespace_feat = self.stat_feat[filename]
-        spec_feat = self.spec_feat[filename]
+        if not self.inference_set:
+            filename = self.filename_list[index]
+            label = self.label.get(filename, torch.Tensor([0]))
+            timespace_feat = self.stat_feat[filename]
+            spec_feat = self.spec_feat[filename]
+        else:
+            label = torch.Tensor([0])
+            timespace_feat = torch.Tensor([0])
+            spec_feat = self.all_feat[index]
 
         return spec_feat, timespace_feat, label

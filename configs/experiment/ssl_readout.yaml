@@ -18,8 +18,8 @@ tags: ["bricks", "ssl_readout"]
 seed: 12345
 
 trainer:
-  min_epochs: 10
-  max_epochs: 100
+  min_epochs: 1
+  max_epochs: 1
   gradient_clip_val: 0.5
 
 model:
