@@ -4,8 +4,8 @@
 # python train.py experiment=example
 
 defaults:
-  - override /data: ssl_spectrogram
-  - override /model: ssl_resnet
+  - override /data: ssl_readout
+  - override /model: readout
   - override /callbacks: default
   - override /trainer: gpu
   - override /logger: tensorboard
@@ -13,7 +13,7 @@ defaults:
 # all parameters below will be merged with parameters from default configurations set above
 # this allows you to overwrite only specified parameters
 
-tags: ["bricks", "ssl_resnet"]
+tags: ["bricks", "ssl_readout"]
 
 seed: 12345
 
@@ -27,19 +27,9 @@ model:
     lr: 3.e-4
   compile: false
 
-callbacks:
-  model_checkpoint:
-    monitor: "val/loss"
-    mode: "min"
-
-  early_stopping:
-    monitor: "val/loss"
-    mode: "min"
-
 data:
-  batch_size: 256
+  batch_size: 64
 
-train: true
-test: true
-predict: true
-# ckpt_path: ./v0_cl_ckpt/checkpoints/epoch_051.ckpt
+train: True
+test: True
+predict: True
