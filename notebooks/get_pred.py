@@ -1,12 +1,41 @@
 import torch
-pred_path = "/share/scratch/haokaizhao/cl-bricks/logs/train/runs/2025-01-17_17-02-20/prediction.pt"
-out_path = "./spec_res.pt"
-threshold = 0.5
+import argparse
 
-pred = torch.load(pred_path)
-res = torch.concat(pred,dim=0)
+def main():
+    # Set up argument parser
+    parser = argparse.ArgumentParser(description="Process prediction and thresholding")
+    
+    parser.add_argument(
+        '--pred_path',
+        type=str,
+        default="/share/scratch/haokaizhao/cl-bricks/logs/train/runs/2025-01-17_17-02-20/prediction.pt",
+        help="Path to the prediction file"
+    )
+    parser.add_argument(
+        '--out_path',
+        type=str,
+        default="./spec_res.pt",
+        help="Path to save the result file"
+    )
+    parser.add_argument('--threshold', type=float, default=0.5, help="Threshold for classification")
+    
+    # Parse the arguments
+    args = parser.parse_args()
 
-predicted = len(res[res > threshold])
-print(f"threshold: {threshold}, predicted: {predicted}, predicted percentage: {predicted / 315720}")
+    # Load predictions
+    pred = torch.load(args.pred_path)
+    
+    # Concatenate predictions
+    res = torch.concat(pred, dim=0)
 
-torch.save(torch.where(res > threshold), out_path)
+    # Calculate predicted values above threshold
+    predicted = len(res[res > args.threshold])
+    
+    # Print the results
+    print(f"Threshold: {args.threshold}, Predicted: {predicted}, Predicted percentage: {predicted / 315720}")
+
+    # Save the results based on the threshold
+    torch.save(torch.where(res > args.threshold), args.out_path)
+
+if __name__ == "__main__":
+    main()
