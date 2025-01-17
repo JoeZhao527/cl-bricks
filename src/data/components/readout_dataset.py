@@ -56,7 +56,7 @@ class BrickDataset(Dataset):
             for i, f_name in enumerate(filename_list)
         }
 
-        all_feat = torch.stack(torch.load(feat_path))
+        all_feat = torch.concat(torch.load(feat_path), dim=0)
         all_feat = all_feat[len(label_df):] if inference_set else all_feat[:len(label_df)]
 
         self.spec_feat = {
