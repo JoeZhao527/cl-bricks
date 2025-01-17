@@ -161,6 +161,9 @@ class BrickSSLModule(LightningModule):
         self.test_loss(loss)
         self.log("test/loss", self.test_loss, on_step=False, on_epoch=True, prog_bar=True)
 
+    def predict_step(self, batch, batch_idx, dataloader_idx=0):
+        return self.net(batch)
+
     def setup(self, stage: str) -> None:
         """Lightning hook that is called at the beginning of fit, validate, test, or predict.
 

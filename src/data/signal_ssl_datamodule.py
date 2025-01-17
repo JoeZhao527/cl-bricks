@@ -4,7 +4,7 @@ from pytorch_lightning import LightningDataModule
 from torch.utils.data import ConcatDataset, DataLoader, Dataset, random_split
 from torchvision.datasets import MNIST
 from torchvision.transforms import transforms
-from src.data.components.ssl_brick_dataset import collate_fn
+from src.data.components.ssl_brick_dataset import collate_fn, collate_wo_augmentation
 
 class BricksDataModule(LightningDataModule):
     """`LightningDataModule` for the Brick-by-Brick dataset.
@@ -143,6 +143,16 @@ class BricksDataModule(LightningDataModule):
             collate_fn=collate_fn
         )
 
+    def predict_dataloader(self):
+        return DataLoader(
+            dataset=self.dataset,
+            batch_size=self.batch_size_per_device,
+            num_workers=self.hparams.num_workers,
+            pin_memory=self.hparams.pin_memory,
+            shuffle=False,
+            collate_fn=collate_wo_augmentation
+        )
+    
     def teardown(self, stage: Optional[str] = None) -> None:
         """Lightning hook for cleaning up after `trainer.fit()`, `trainer.validate()`,
         `trainer.test()`, and `trainer.predict()`.

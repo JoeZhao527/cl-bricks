@@ -102,6 +102,50 @@ def collate_fn(batch: List[torch.Tensor], target_dim: Tuple[int, int] = (128, 64
     return (batch_features1, batch_features2), labels
 
 
+def collate_wo_augmentation(batch: List[torch.Tensor], target_dim: Tuple[int, int] = (128, 64)):
+    """
+    Collate function to generate a batch suitable for whole data feature extraction
+    """
+    # target_dim max is (129, 71)
+    padded_features = []
+    target_height, target_width = target_dim  # Target dimensions
+
+    for idx, feat in enumerate(batch):
+        # Ensure the feature is a torch.Tensor
+        if not isinstance(feat, torch.Tensor):
+            raise TypeError(f"Feature at index {idx} is not a torch.Tensor. Got {type(feat)}")
+
+        # Get current dimensions
+        current_height, current_width = feat.shape
+        
+        # Calculate padding sizes
+        pad_height = target_height - current_height
+        pad_width = target_width - current_width
+        
+        # Initialize padding for height and width
+        # pad should be in the format (pad_left, pad_right, pad_top, pad_bottom)
+        pad = (0, pad_width, 0, pad_height)
+        
+        # If padding is needed
+        if pad_height > 0 or pad_width > 0:
+            # Apply padding with constant value 0
+            padded_feat = F.pad(feat, pad, mode='constant', value=0)
+        else:
+            # If the feature is larger than target, truncate it
+            padded_feat = feat[:target_height, :target_width]
+        
+        # Ensure the padded feature has the target shape
+        assert padded_feat.shape == (target_height, target_width), \
+            f"Padded feature has shape {padded_feat.shape}, expected {(target_height, target_width)}"
+        
+        padded_features.append(padded_feat)
+    
+    # Stack all padded features into a single tensor
+    batch_spec_features = torch.stack(padded_features)
+
+    return batch_spec_features
+
+
 class SSLBrickDataset(Dataset):
     def __init__(
         self,
@@ -118,7 +162,6 @@ class SSLBrickDataset(Dataset):
             filename_list.extend(list(zipf.namelist()[1:]))
 
         self.filename_list = filename_list
-
 
         # Open lmdb for spectrogram loading
         self.env = lmdb.open(feat_path, readonly=True, lock=False, readahead=False)
