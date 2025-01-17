@@ -337,6 +337,7 @@ if __name__ == '__main__':
         print(f"Predicting level {i}")
         test_preds_all = make_predictions_with_models(prec_svm_classifiers[i], tst_feat)
         # test_preds.append(align_and_combine_predictions(prec_svm_classifiers[i], test_preds_all, tst_feat))
+        print(test_preds_all)
         test_preds.append(np.apply_along_axis(
             lambda x: np.unique(x, return_counts=True)[0][np.argmax(np.unique(x, return_counts=True)[1])],
             axis=0, arr=np.stack(test_preds_all, axis=0)
