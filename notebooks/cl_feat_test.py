@@ -293,8 +293,6 @@ if __name__ == '__main__':
         i+1: LEVEL_LABELS[i] for i in range(5)
     }
 
-    print(tiers)
-    
     def get_tier(label):
         for tier_num, tier_list in tiers.items():
             if label in tier_list:
@@ -338,10 +336,7 @@ if __name__ == '__main__':
         test_preds_all = make_predictions_with_models(prec_svm_classifiers[i], tst_feat)
         # test_preds.append(align_and_combine_predictions(prec_svm_classifiers[i], test_preds_all, tst_feat))
         print(test_preds_all)
-        test_preds.append(np.apply_along_axis(
-            lambda x: np.unique(x, return_counts=True)[0][np.argmax(np.unique(x, return_counts=True)[1])],
-            axis=0, arr=np.stack(test_preds_all, axis=0)
-        ))
+        test_preds.append(mode_along_axis(arr=np.stack(test_preds_all, axis=0), axis=0))
 
     # Convert to array and process None values
     stacked = np.stack(test_preds).transpose()
