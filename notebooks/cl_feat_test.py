@@ -257,7 +257,7 @@ if __name__ == '__main__':
     train_y_path = "../downloads/train_y_v0.1.0.csv"
     feature_path = "../prediction.pt"
     test_x_path = "../downloads/test_X_v0.1.0.zip"
-    dev = True
+    dev = False
     n_fold_cv = 10
 
     train_y = pd.read_csv(train_y_path)
@@ -337,8 +337,6 @@ if __name__ == '__main__':
 
     # Convert to array and process None values
     stacked = np.stack(test_preds).transpose()
-    # stacked = test_preds.transpose()
-    print(stacked)
     for row in tqdm(stacked):
         # Find first occurrence of 'None' if any
         none_idx = np.where(row == 'None')[0]
