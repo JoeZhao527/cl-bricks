@@ -22,10 +22,12 @@ class MLPReadout(nn.Module):
         )
 
         self.readout = nn.Sequential(
-            nn.Linear(256, 256),
+            nn.Linear(256, 1024),
+            nn.ReLU(),
+            nn.Linear(1024, 512),
             nn.ReLU(),
             nn.Dropout(0.2),
-            nn.Linear(256, n_classes)
+            nn.Linear(512, n_classes)
         )
     
     def forward(self, x):

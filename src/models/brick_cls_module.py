@@ -175,6 +175,12 @@ class BrickClsModule(LightningModule):
         self.log("test/loss", self.test_loss, on_step=False, on_epoch=True, prog_bar=True)
         self.log("test/f1", self.test_acc, on_step=False, on_epoch=True, prog_bar=True)
 
+    def predict_step(self, batch, batch_idx, dataloader_idx=0):
+        x, _ = batch
+        logits = self.forward(x)
+        logits = torch.sigmoid(logits)
+        return logits
+    
     def on_test_epoch_end(self) -> None:
         """Lightning hook that is called when a test epoch ends."""
         pass
@@ -213,7 +219,3 @@ class BrickClsModule(LightningModule):
                 },
             }
         return {"optimizer": optimizer}
-
-
-if __name__ == "__main__":
-    _ = MNISTLitModule(None, None, None, None)
