@@ -118,7 +118,6 @@ def train_svm_classifier(train_X, _label, folds, drop_none=False):
     params = {
         'verbose': True,
         'random_state': 42,
-        'n_jobs': 16,  # Use all available cores
     }
 
     for f_idx, fold in enumerate(folds):
