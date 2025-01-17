@@ -116,7 +116,7 @@ def train_svm_classifier(train_X, _label, folds, drop_none=False):
 
     # Define LightGBM parameters
     params = {
-        'verbose': True,
+        'verbose': False,
         'random_state': 42,
     }
 
@@ -205,7 +205,7 @@ def make_predictions_with_models(classifiers, test_data):
     """
     test_preds_all = []
     for clf in tqdm(classifiers):
-        pred = clf.predict_proba(test_data)
+        pred = clf.predict(test_data)
         test_preds_all.append(pred)
     return test_preds_all
 
