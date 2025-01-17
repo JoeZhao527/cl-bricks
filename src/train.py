@@ -98,13 +98,19 @@ def train(cfg: DictConfig) -> Tuple[Dict[str, Any], Dict[str, Any]]:
         log.info(f"Best ckpt path: {ckpt_path}")
 
     if cfg.get("predict"):
-        log.info("Starting testing!")
+        log.info("Starting predicting!")
         ckpt_path = trainer.checkpoint_callback.best_model_path
+
         if ckpt_path == "":
-            log.warning("Best ckpt not found! Using current weights for testing...")
+            log.warning("Best ckpt not found! Checking the provided ckpt_path...")
+            ckpt_path = cfg.get("ckpt_path", "")
+
+        if ckpt_path == "":
+            log.warning("ckpt not found! Using current weights for predicting...")
             ckpt_path = None
+
         trainer.predict(model=model, datamodule=datamodule, ckpt_path=ckpt_path)
-        log.info(f"Best ckpt path: {ckpt_path}")
+        log.info(f"Used ckpt path: {ckpt_path}")
 
     test_metrics = trainer.callback_metrics
 
