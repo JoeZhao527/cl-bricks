@@ -344,6 +344,7 @@ if __name__ == '__main__':
     # Convert to array and process None values
     # stacked = np.stack(test_preds).transpose()
     stacked = test_preds.transpose()
+    print(stacked)
     for row in tqdm(stacked):
         # Find first occurrence of 'None' if any
         none_idx = np.where(row == 'None')[0]
