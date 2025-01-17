@@ -42,9 +42,8 @@ class BrickDataset(Dataset):
         zipf = ZipFile(zip_path, 'r')
         stat_feat = pd.read_csv(stat_path)
 
-        if label_path != None:
-            label_df = pd.read_csv(label_path)
-            label = {"train_X/" + rec[0]: rec[1:] for rec in label_df.values}
+        label_df = pd.read_csv(label_path)
+        label = {"train_X/" + rec[0]: rec[1:] for rec in label_df.values}
 
 
         filename_list = list(zipf.namelist()[1:])
@@ -65,7 +64,7 @@ class BrickDataset(Dataset):
         }
 
         # Prepare labels
-        if label_path != None:
+        if inference_set != None:
             self.label = {
                 f_name: (torch.tensor(label[f_name].astype(int)) >= 0).float()
                 for f_name in filename_list

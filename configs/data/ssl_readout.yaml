@@ -13,5 +13,6 @@ pred_dataset:
   _target_: src.data.components.readout_dataset.BrickDataset
   zip_path: ./downloads/test_X_v0.1.0.zip
   feat_path: ./prediction.pt
+  label_path: ./downloads/train_y_v0.1.0.csv
   stat_path: ./downloads/test_features_full_v3.csv
   inference_set: True
