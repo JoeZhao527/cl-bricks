@@ -161,7 +161,7 @@ class SSLBrickDataset(Dataset):
             zipf = ZipFile(zip_path, 'r')
             filename_list.extend(list(zipf.namelist()[1:]))
 
-        self.filename_list = filename_list
+        self.filename_list = filename_list[:200]
 
         # Open lmdb for spectrogram loading
         self.env = lmdb.open(feat_path, readonly=True, lock=False, readahead=False)

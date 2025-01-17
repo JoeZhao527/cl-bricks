@@ -1,6 +1,9 @@
 import warnings
 from importlib.util import find_spec
 from typing import Any, Callable, Dict, Optional, Tuple
+import itertools
+from tqdm import tqdm
+import torch
 
 from omegaconf import DictConfig
 
@@ -117,3 +120,9 @@ def get_metric_value(metric_dict: Dict[str, Any], metric_name: Optional[str]) ->
     log.info(f"Retrieved metric value! <{metric_name}={metric_value}>")
 
     return metric_value
+
+def dump_prediction_result(prediction: Any, store_path: str):
+
+    torch.save(prediction, store_path)
+
+    log.info(f"Prediction results dumped to {store_path}")

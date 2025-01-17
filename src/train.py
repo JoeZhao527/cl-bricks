@@ -3,7 +3,7 @@ from typing import Any, Dict, List, Optional, Tuple
 import hydra
 import pytorch_lightning as L
 import rootutils
-import torch
+import os
 from pytorch_lightning import Callback, LightningDataModule, LightningModule, Trainer
 from pytorch_lightning.loggers import Logger
 from omegaconf import DictConfig
@@ -34,6 +34,7 @@ from src.utils import (
     instantiate_loggers,
     log_hyperparameters,
     task_wrapper,
+    dump_prediction_result
 )
 
 log = RankedLogger(__name__, rank_zero_only=True)
@@ -109,7 +110,8 @@ def train(cfg: DictConfig) -> Tuple[Dict[str, Any], Dict[str, Any]]:
             log.warning("ckpt not found! Using current weights for predicting...")
             ckpt_path = None
 
-        trainer.predict(model=model, datamodule=datamodule, ckpt_path=ckpt_path)
+        prediction = trainer.predict(model=model, datamodule=datamodule, ckpt_path=ckpt_path)
+        dump_prediction_result(prediction, os.path.join(cfg.paths.output_dir, "prediction.pt"))
         log.info(f"Used ckpt path: {ckpt_path}")
 
     test_metrics = trainer.callback_metrics
