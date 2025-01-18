@@ -5,20 +5,32 @@ from sklearn.cluster import KMeans
 from sklearn.preprocessing import StandardScaler
 import matplotlib.pyplot as plt
 
-from sklearn.cluster import DBSCAN
-
+# Load the data
 data = torch.concat(torch.load("./prediction.pt"))
 
 # Step 1: Normalize the data
 scaler = StandardScaler()
 data_normalized = scaler.fit_transform(data.numpy())
 
-# DBSCAN clustering (no need to specify the number of clusters)
-dbscan = DBSCAN(eps=0.5, min_samples=10, n_jobs=12)
-dbscan_labels = dbscan.fit_predict(data_normalized)
+# KMeans++ clustering (KMeans++ is the default initialization method in sklearn's KMeans)
+# 6 clusters for 6 super parent classes
+kmeans = KMeans(init='k-means++', n_clusters=6, n_jobs=12, verbose=1)  
+kmeans.fit(data_normalized)
 
-# Convert DBSCAN labels to a tensor
-dbscan_labels_tensor = torch.tensor(dbscan_labels)
+# Get the cluster labels for each sample
+kmeans_labels = kmeans.labels_
 
-print(dbscan_labels_tensor.shape)
-torch.save(dbscan_labels_tensor, "./cluster.pt")
+# Get the cluster centers
+cluster_centers = kmeans.cluster_centers_
+
+# Compute the distance from each sample to each cluster center
+distances = np.linalg.norm(data_normalized[:, np.newaxis] - cluster_centers, axis=2)
+
+# Convert distances to a tensor
+distances_tensor = torch.tensor(distances)
+
+# Print the shape of the distances tensor
+print(distances_tensor.shape)  # This should have shape (num_samples, num_clusters)
+
+# Save the tensor
+torch.save(distances_tensor, "./distances_to_centers.pt")
