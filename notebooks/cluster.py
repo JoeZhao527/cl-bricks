@@ -6,7 +6,7 @@ from sklearn.preprocessing import StandardScaler
 import matplotlib.pyplot as plt
 
 # Load the data
-data = torch.concat(torch.load("./prediction.pt"))[:10000]
+data = torch.concat(torch.load("./prediction.pt"))
 
 # Step 1: Normalize the data
 scaler = StandardScaler()
