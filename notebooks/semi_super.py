@@ -1,4 +1,5 @@
-print(f"Start importing modules")
+import datetime
+print(f"[{datetime.datetime.now()}] Start importing modules")
 
 import pandas as pd
 import numpy as np
@@ -407,7 +408,7 @@ train_input = train_sets
 test_input = cliped_test_X
 
 for i in range(5):
-    print(f"Training level {i}")
+    print(f"[{datetime.datetime.now()}] Training level {i}")
     _classifiers, _val_predictions, _unlabeled_preds = train_random_forest(
         train_input,
         test_input,
@@ -565,4 +566,4 @@ stackedfinalresult.to_csv("./0124_semi_supervise_dev.csv", index=False)
 # %%
 
 
-
+print(f"[{datetime.datetime.now()}] Finished")
