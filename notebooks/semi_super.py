@@ -396,7 +396,7 @@ unlabeled_predictions = []
 params = {
     'n_estimators': 100,
     'random_state': 42,
-    'n_jobs': 20  # Use all available cores
+    'n_jobs': 30  # Use all available cores
 }
 
 model_cls = RandomForestClassifier
