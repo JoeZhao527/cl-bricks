@@ -1,3 +1,5 @@
+print(f"Start importing modules")
+
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
@@ -19,6 +21,8 @@ from tqdm import tqdm
 from sklearn.semi_supervised import SelfTrainingClassifier
 from sklearn.ensemble import RandomForestClassifier
 warnings.filterwarnings('ignore')
+
+print(f"Start running")
 
 """
 Data split
