@@ -13,9 +13,9 @@ from torch.utils.data import Dataset
 import tsfel
 from sklearn.model_selection import StratifiedKFold
 from tqdm import tqdm
-import lightgbm as lgb
-from hiclass import LocalClassifierPerNode, LocalClassifierPerParentNode, LocalClassifierPerLevel
-from lightgbm import LGBMClassifier
+# import lightgbm as lgb
+# from hiclass import LocalClassifierPerNode, LocalClassifierPerParentNode, LocalClassifierPerLevel
+# from lightgbm import LGBMClassifier
 from sklearn.semi_supervised import SelfTrainingClassifier
 from sklearn.ensemble import RandomForestClassifier
 warnings.filterwarnings('ignore')
