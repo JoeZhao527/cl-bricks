@@ -560,7 +560,7 @@ print("Hit num distribution")
 print(check_pred_num(stackedfinalresult, thr=0.35).value_counts())
 
 # %%
-stackedfinalresult.to_csv("../logs/submit/0123_semi_supervise_dev.csv", index=False)
+stackedfinalresult.to_csv("./0124_semi_supervise_dev.csv", index=False)
 
 # %%
 
