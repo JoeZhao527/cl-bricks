@@ -195,14 +195,12 @@ for k in range(0, 4):
                 is_subset.append([src_lb, tgt_lb])
 
     remove_label = set([s[0] for s in is_subset])
-    print(f"Level {k}")
-    print(is_subset)
-    print(remove_label)
-    print()
     
     for rl in remove_label:
         level_labels[k].remove(rl)
         level_labels[k+1].append(rl)
+
+    print(f"Label split level {k} done.")
 
 # %%
 tiers = {
