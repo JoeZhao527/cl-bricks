@@ -520,7 +520,7 @@ def train_random_forest(
 
         # Create and train Random Forest model
         estimator = model_class(**params)
-        model = BalancedSelfTrainingClassifier(estimator, max_iter=5, verbose=1)
+        model = BalancedSelfTrainingClassifier(estimator, max_iter=5, threshold=0.9, verbose=1)
         model.fit(semi_train_X_fold, semi_train_y_fold, restrict_ratio=0.1)
         
         classifiers.append(model)
@@ -746,7 +746,7 @@ print("Hit num distribution")
 print(check_pred_num(stackedfinalresult, thr=0.35).value_counts())
 
 # %%
-stackedfinalresult.to_csv("./0124_semi_supervise_balanced.csv", index=False)
+stackedfinalresult.to_csv("./0124_semi_supervise_balanced_thr090.csv", index=False)
 
 # %%
 
