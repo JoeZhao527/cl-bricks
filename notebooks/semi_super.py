@@ -19,9 +19,194 @@ from tqdm import tqdm
 # import lightgbm as lgb
 # from hiclass import LocalClassifierPerNode, LocalClassifierPerParentNode, LocalClassifierPerLevel
 # from lightgbm import LGBMClassifier
-from sklearn.semi_supervised import SelfTrainingClassifier
 from sklearn.ensemble import RandomForestClassifier
 warnings.filterwarnings('ignore')
+
+"""
+Update the SelfTrainingClassifier to only involve not-None labels into training
+"""
+from sklearn.base import _fit_context, clone
+from sklearn.semi_supervised import SelfTrainingClassifier
+from sklearn.utils import safe_mask
+
+def selective_sampling(arr, threshold=0.2, random_state=None):
+    """
+    Parameters
+    ----------
+    arr : 1D NumPy array
+        The array of values from which we want to sample.
+    threshold : float, default=0.2
+        The maximum fraction of a single unique value we include in the final selection.
+        If a value's fraction is above 'threshold', we will randomly sample exactly
+        `threshold * count_of_that_value` entries. If it is below, we include all of them.
+    random_state : int or None
+        Seed for reproducible sampling. If None, no fixed seed is used.
+
+    Returns
+    -------
+    selected : 1D NumPy array of int (0 or 1)
+        A binary mask indicating which entries were selected.
+    """
+
+    # For reproducibility:
+    if random_state is not None:
+        np.random.seed(random_state)
+    
+    # 1) Get unique values and their counts
+    unique_vals, counts = np.unique(arr, return_counts=True)
+    total = len(arr)
+    
+    # Prepare an output array (0 = not selected, 1 = selected)
+    selected = np.zeros_like(arr, dtype=int)
+    
+    # 2) Loop over each unique value
+    for val, count in zip(unique_vals, counts):
+        fraction = count / total
+        
+        # All the indices in arr corresponding to 'val'
+        indices = np.where(arr == val)[0]
+        
+        if fraction > threshold:
+            # Randomly sample exactly threshold fraction 
+            # e.g., threshold=0.2 => keep 20% of these
+            sample_count = int(round(threshold * count))
+            chosen_indices = np.random.choice(indices, sample_count, replace=False)
+            selected[chosen_indices] = 1
+        else:
+            # If fraction <= threshold, select all of them
+            selected[indices] = 1
+    
+    return selected.astype(bool)
+
+class BalancedSelfTrainingClassifier(SelfTrainingClassifier):
+    @_fit_context(
+        # SelfTrainingClassifier.base_estimator is not validated yet
+        prefer_skip_nested_validation=False
+    )
+    def fit(self, X, y, restrict_ratio=0.3):
+        """
+        Fit self-training classifier using `X`, `y` as training data.
+
+        Modified to make sure the new-involved 
+
+        Parameters
+        ----------
+        X : {array-like, sparse matrix} of shape (n_samples, n_features)
+            Array representing the data.
+
+        y : {array-like, sparse matrix} of shape (n_samples,)
+            Array representing the labels. Unlabeled samples should have the
+            label -1.
+
+        Returns
+        -------
+        self : object
+            Fitted estimator.
+        """
+        # we need row slicing support for sparse matrices, but costly finiteness check
+        # can be delegated to the base estimator.
+        X, y = self._validate_data(
+            X, y, accept_sparse=["csr", "csc", "lil", "dok"], force_all_finite=False
+        )
+
+        self.base_estimator_ = clone(self.base_estimator)
+
+        if y.dtype.kind in ["U", "S"]:
+            raise ValueError(
+                "y has dtype string. If you wish to predict on "
+                "string targets, use dtype object, and use -1"
+                " as the label for unlabeled samples."
+            )
+
+        has_label = y != -1
+
+        if np.all(has_label):
+            warnings.warn("y contains no unlabeled samples", UserWarning)
+
+        if self.criterion == "k_best" and (
+            self.k_best > X.shape[0] - np.sum(has_label)
+        ):
+            warnings.warn(
+                (
+                    "k_best is larger than the amount of unlabeled "
+                    "samples. All unlabeled samples will be labeled in "
+                    "the first iteration"
+                ),
+                UserWarning,
+            )
+
+        self.transduction_ = np.copy(y)
+        self.labeled_iter_ = np.full_like(y, -1)
+        self.labeled_iter_[has_label] = 0
+
+        self.n_iter_ = 0
+
+        while not np.all(has_label) and (
+            self.max_iter is None or self.n_iter_ < self.max_iter
+        ):
+            self.n_iter_ += 1
+            self.base_estimator_.fit(
+                X[safe_mask(X, has_label)], self.transduction_[has_label]
+            )
+                    
+            # Predict on the unlabeled samples
+            prob = self.base_estimator_.predict_proba(X[safe_mask(X, ~has_label)])
+            pred = self.base_estimator_.classes_[np.argmax(prob, axis=1)]
+
+            balance_check = selective_sampling(
+                np.argmax(prob, axis=1),
+                threshold=restrict_ratio,
+                random_state=self.n_iter_
+            )
+            
+            max_proba = np.max(prob, axis=1)
+
+            # Select new labeled samples
+            if self.criterion == "threshold":
+                selected = max_proba > self.threshold
+            else:
+                n_to_select = min(self.k_best, max_proba.shape[0])
+                if n_to_select == max_proba.shape[0]:
+                    selected = np.ones_like(max_proba, dtype=bool)
+                else:
+                    # NB these are indices, not a mask
+                    selected = np.argpartition(-max_proba, n_to_select)[:n_to_select]
+
+            original_select_num = len(selected[selected == True])
+            selected = selected & balance_check
+
+            # Map selected indices into original array
+            selected_full = np.nonzero(~has_label)[0][selected]
+
+            # Add newly labeled confident predictions to the dataset
+            self.transduction_[selected_full] = pred[selected]
+            has_label[selected_full] = True
+            self.labeled_iter_[selected_full] = self.n_iter_
+
+            if selected_full.shape[0] == 0:
+                # no changed labels
+                self.termination_condition_ = "no_change"
+                break
+
+            if self.verbose:
+                print(
+                    f"[{datetime.datetime.now()}] "
+                    f"End of iteration {self.n_iter_},"
+                    f" Original selects {original_select_num}, Balanced keeps {len(balance_check[balance_check])}, After gets {len(selected[selected])},"
+                    f" added {selected_full.shape[0]} new labels."
+                )
+
+        if self.n_iter_ == self.max_iter:
+            self.termination_condition_ = "max_iter"
+        if np.all(has_label):
+            self.termination_condition_ = "all_labeled"
+
+        self.base_estimator_.fit(
+            X[safe_mask(X, has_label)], self.transduction_[has_label]
+        )
+        self.classes_ = self.base_estimator_.classes_
+        return self
+
 
 print(f"Start running")
 
@@ -335,8 +520,8 @@ def train_random_forest(
 
         # Create and train Random Forest model
         estimator = model_class(**params)
-        model = SelfTrainingClassifier(estimator, verbose=1)
-        model.fit(semi_train_X_fold, semi_train_y_fold)
+        model = BalancedSelfTrainingClassifier(estimator, max_iter=5, verbose=1)
+        model.fit(semi_train_X_fold, semi_train_y_fold, restrict_ratio=0.1)
         
         classifiers.append(model)
         
@@ -561,7 +746,7 @@ print("Hit num distribution")
 print(check_pred_num(stackedfinalresult, thr=0.35).value_counts())
 
 # %%
-stackedfinalresult.to_csv("./0124_semi_supervise_dev.csv", index=False)
+stackedfinalresult.to_csv("./0124_semi_supervise_balanced.csv", index=False)
 
 # %%
 
