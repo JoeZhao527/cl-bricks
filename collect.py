@@ -44,7 +44,7 @@ if __name__ == '__main__':
 
     print(check_pred_num(m_res).value_counts())
 
-    for col in list(m_res.columns)[1:]:
+    for col in tqdm(list(m_res.columns)[1:], desc="Filtering"):
         m_res[col] = (m_res[col] > 0.5).astype(int)
 
     arr = m_res.drop(columns=["filename"]).values
