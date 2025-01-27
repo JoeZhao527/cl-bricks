@@ -38,16 +38,16 @@ if __name__ == '__main__':
     thr = 0.4
 
     avg = [
-        pd.read_csv(os.path.join(base_dir, "xgb/test_predictions", f"final_result_{i}.csv"))
+        pd.read_csv(os.path.join(base_dir, "rf/test_predictions", f"final_result_{i}.csv"))
         for i in tqdm(range(6), desc="Loading")
     ]
 
     m_res = merge_mean(avg)
 
-    print(check_pred_num(m_res).value_counts())
+    print(check_pred_num(m_res, thr).value_counts())
 
     for col in tqdm(list(m_res.columns)[1:], desc="Filtering"):
         m_res[col] = (m_res[col] > thr).astype(int)
 
     arr = m_res.drop(columns=["filename"]).values
-    np.save("0127_xgb_base.npy", np.stack(np.where(arr == 1)))
+    np.save("0127_rf_base.npy", np.stack(np.where(arr == 1)))
