@@ -40,6 +40,7 @@ base_xgboost = {
     "model": {
         "model_cls": "xgboost",
         "model_params": {
+            'device': 'cuda',
             'n_estimators': 400,       # Number of trees
             'learning_rate': 0.3,     # Default learning rate
             'max_depth': 6,           # Maximum depth of trees

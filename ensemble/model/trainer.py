@@ -163,12 +163,14 @@ def evaluate(label_df, pred_df):
 
         col_eval = pd.DataFrame({"label": label_df[col], "pred": pred_df[col]})
         col_eval = col_eval[col_eval["label"] != 0]
+        col_eval['label'] = (col_eval['label'] > 0).astype(int)
+        col_eval['pred'] = (col_eval['pred'] > 0.5).astype(int)
 
-        # Compute macro precision, recall, and f1-score
+        # Compute precision, recall, and f1-score
         precision, recall, f1, support = precision_recall_fscore_support(
             col_eval["label"],
             col_eval["pred"],
-            average="macro",
+            average="binary",
             zero_division=0  # to handle divisions by zero if any
         )
         
