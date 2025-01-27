@@ -35,6 +35,8 @@ def check_pred_num(_final_res, thr=0.4):
 
 if __name__ == '__main__':
     base_dir = "./logs/ensemble/base_ensemble/01_27_2025-16_33_48"
+    thr = 0.4
+
     avg = [
         pd.read_csv(os.path.join(base_dir, "xgb/test_predictions", f"final_result_{i}.csv"))
         for i in tqdm(range(6), desc="Loading")
@@ -45,7 +47,7 @@ if __name__ == '__main__':
     print(check_pred_num(m_res).value_counts())
 
     for col in tqdm(list(m_res.columns)[1:], desc="Filtering"):
-        m_res[col] = (m_res[col] > 0.5).astype(int)
+        m_res[col] = (m_res[col] > thr).astype(int)
 
     arr = m_res.drop(columns=["filename"]).values
     np.save("0127_xgb_base.npy", np.stack(np.where(arr == 1)))
