@@ -7,7 +7,7 @@ base_rf = {
         "model_params": {
             'n_estimators': 100,
             'random_state': 42,
-            'n_jobs': 8
+            'n_jobs': 20
         },
         "none_ratio_thr_list": [0.1, 0.15, 0.35, 0.75, 0.85],
     },
@@ -25,7 +25,7 @@ base_lgb = {
             'n_estimators': 100,
             'learning_rate': 0.1,
             'random_state': 42,
-            'n_jobs': 8,  # Use all available cores
+            'n_jobs': 20,  # Use all available cores
             'objective': 'multiclass',
         },
         "none_ratio_thr_list": [0.1, 0.15, 0.35, 0.75, 0.85],
@@ -40,6 +40,7 @@ base_xgboost = {
     "model": {
         "model_cls": "xgboost",
         "model_params": {
+            'device': 'gpu:6',
             'n_estimators': 400,       # Number of trees
             'learning_rate': 0.3,     # Default learning rate
             'max_depth': 6,           # Maximum depth of trees
@@ -51,7 +52,7 @@ base_xgboost = {
             'reg_lambda': 1,          # L2 regularization term
             'random_state': 42,
             'eval_metric': 'logloss',
-            'n_jobs': 8
+            'n_jobs': 20
         },
         "none_ratio_thr_list": [0.1, 0.15, 0.35, 0.75, 0.85],
     },

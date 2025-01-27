@@ -80,4 +80,4 @@ def test_result_pipeline(classifiers, cliped_test_X, columnlist, listtestfile) -
     
     final_result = post_processing(test_preds, columnlist, listtestfile)
 
-    return test_level_agg[-1], final_result
+    return pd.concat(test_level_agg, axis=1), final_result

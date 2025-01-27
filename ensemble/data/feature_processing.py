@@ -96,3 +96,7 @@ def train_test_wrapper(train: List[pd.DataFrame], test: pd.DataFrame, func):
     # Helper function for easier preprocessing
     res_list = func(train + [test])
     return res_list[:-1], res_list[-1]
+
+def train_test_list_wrapper(train: List[pd.DataFrame], test: List[pd.DataFrame], func):
+    res_list = func(train + test)
+    return res_list[:len(train)], res_list[len(train):]

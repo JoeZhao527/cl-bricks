@@ -9,7 +9,7 @@ from ensemble.config.feature_names import FEATURE_NAMES
 from ensemble.config.labels import LABEL_TIERS, LABEL_NAMES
 from ensemble.config.paths import PATHS
 from ensemble.model.model_zoo import model_zoo
-from ensemble.data.feature_processing import bin_normalization, feature_crossing, train_test_wrapper
+from ensemble.data.feature_processing import bin_normalization, feature_crossing, train_test_wrapper, train_test_list_wrapper
 from ensemble.data.label_processing import LabelTiers
 from ensemble.model.trainer import BaseModel
 from ensemble.model.predictor import test_result_pipeline
@@ -37,7 +37,7 @@ def run(cfg):
     train_sets = [pd.read_csv(p) for p in PATHS.train_x_paths]
 
     log(f"Start to load testing data")
-    test_X = pd.read_csv(PATHS.test_x_path)
+    test_sets = [pd.read_csv(p) for p in PATHS.test_x_paths]
     
     if cfg["data"].get("n_train_sets", None):
         train_sets = train_sets[:cfg["data"]["n_train_sets"]]
@@ -46,19 +46,21 @@ def run(cfg):
 
     # only keep the selected feature columns
     train_sets = [trn[FEATURE_NAMES] for trn in train_sets]
-    test_X = test_X[FEATURE_NAMES]
+    test_sets = [tst[FEATURE_NAMES] for tst in test_sets]
+    # test_X = test_X[FEATURE_NAMES]
+    
     log(f"Got {len(train_sets[0].columns)} feature columns after selection.")
 
     # normalization
-    train_sets, test_X = train_test_wrapper(
-        train_sets, test_X,
+    train_sets, test_sets = train_test_list_wrapper(
+        train_sets, test_sets,
         partial(bin_normalization, bin_nums=1000)
     )
     log(f"Got {len(train_sets[0].columns)} feature columns after normalization.")
 
     # feature crossing
-    train_sets, test_X = train_test_wrapper(
-        train_sets, test_X,
+    train_sets, test_sets = train_test_list_wrapper(
+        train_sets, test_sets,
         partial(feature_crossing, corr_thr=0.2)
     )
     log(f"Got {len(train_sets[0].columns)} feature columns after feature crossing.")
@@ -90,7 +92,7 @@ def run(cfg):
 
         # evaluation
         cv_report = model.evaluation(label_tier.train_y)
-        cv_report_path = os.path.join(output_base, "cv_report.csv")
+        cv_report_path = os.path.join(_output_dir, "cv_report.csv")
         cv_report.to_csv(cv_report_path, index=False)
 
         # Save validation result
@@ -100,20 +102,24 @@ def run(cfg):
         log(f"Validation prediction saved to {val_pred_res_path}")
 
         # PREDICTION
-        test_prediction, final_result = test_result_pipeline(
-            classifiers=model.classifiers,
-            cliped_test_X=test_X,
-            columnlist=LABEL_NAMES,
-            listtestfile=test_filenames
-        )
-        log(f"Test inferencing completed.")
+        test_output_dir = os.path.join(_output_dir, "test_predictions")
+        os.makedirs(test_output_dir)
 
-        test_prediction_path = os.path.join(_output_dir, "tst_preds.csv")
-        test_prediction.to_csv(test_prediction_path, index=False)
-        log(f"Test prediction result saved to {test_prediction_path}")
+        for tst_idx, test_X in enumerate(test_sets):
+            test_prediction, final_result = test_result_pipeline(
+                classifiers=model.classifiers,
+                cliped_test_X=test_X,
+                columnlist=LABEL_NAMES,
+                listtestfile=test_filenames
+            )
+            log(f"Test inferencing completed.")
 
-        final_result_path = os.path.join(_output_dir, "final_result.csv")
-        final_result.to_csv(final_result_path, index=False)
-        log(f"Final result saved to {final_result_path}")
+            test_prediction_path = os.path.join(test_output_dir, f"tst_preds_{tst_idx}.csv")
+            test_prediction.to_csv(test_prediction_path, index=False)
+            log(f"Test prediction result saved to {test_prediction_path}")
+
+            final_result_path = os.path.join(test_output_dir, f"final_result_{tst_idx}.csv")
+            final_result.to_csv(final_result_path, index=False)
+            log(f"Final result saved to {final_result_path}")
         
     log(f"Finished.")
