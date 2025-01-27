@@ -18,6 +18,10 @@ class LabelTiers:
         self.level_labels = self._get_level_labels()
         self.label_tiers = {i+1: self.level_labels[i] for i in range(LABEL_TIERS)}
         self.padded_labels = self._prepare_padded_labels()
+        
+        # Regression labels for counts of labels
+        self.zeros_count = self.train_y.drop(columns=['filename']).eq(0).sum(axis=1)
+        self.ones_count = self.train_y.drop(columns=['filename']).eq(1).sum(axis=1)
 
     def _get_level_labels(self, load: bool = True):
         if load:

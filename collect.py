@@ -34,11 +34,12 @@ def check_pred_num(_final_res, thr=0.4):
     return (filtered_df >= thr).sum(axis=1)
 
 if __name__ == '__main__':
-    base_dir = "./logs/ensemble/base_ensemble/01_27_2025-16_33_48"
+    # base_dir = "./logs/ensemble/base_ensemble/01_27_2025-16_33_48"
+    base_dir = "./logs/ensemble/base_ensemble/01_27_2025-21_34_30"
     thr = 0.4
 
     avg = [
-        pd.read_csv(os.path.join(base_dir, "lgb/test_predictions", f"final_result_{i}.csv"))
+        pd.read_csv(os.path.join(base_dir, "xgb/test_predictions", f"final_result_{i}.csv"))
         for i in tqdm(range(6), desc="Loading")
     ]
 
@@ -50,4 +51,4 @@ if __name__ == '__main__':
         m_res[col] = (m_res[col] > thr).astype(int)
 
     arr = m_res.drop(columns=["filename"]).values
-    np.save("0127_lgb_base.npy", np.stack(np.where(arr == 1)))
+    np.save("0127_xgb_recall.npy", np.stack(np.where(arr == 1)))
