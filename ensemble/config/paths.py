@@ -19,10 +19,10 @@ class PATHS:
     test_x_paths = [
         "./downloads/test_data_features_v3_fixed/test_features_full_v3.csv",
         "./downloads/test_data_features_v3_fixed/test_features_split1_2_v3.csv",
-        # "./downloads/test_data_features_v3_fixed/test_features_split2_2_v3.csv",
-        # "./downloads/test_data_features_v3_fixed/test_features_split1_3_v3.csv",
-        # "./downloads/test_data_features_v3_fixed/test_features_split2_3_v3.csv",
-        # "./downloads/test_data_features_v3_fixed/test_features_split3_3_v3.csv",
+        "./downloads/test_data_features_v3_fixed/test_features_split2_2_v3.csv",
+        "./downloads/test_data_features_v3_fixed/test_features_split1_3_v3.csv",
+        "./downloads/test_data_features_v3_fixed/test_features_split2_3_v3.csv",
+        "./downloads/test_data_features_v3_fixed/test_features_split3_3_v3.csv",
     ]
 
     test_zip_path = "./downloads/test_X_v0.1.0.zip"

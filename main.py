@@ -5,12 +5,12 @@ from copy import deepcopy
 
 if __name__ == '__main__':
     cfg = deepcopy(base_ensemble)
-    cfg["data"]["n_train_sets"] = 2
-    cfg["data"]["n_splits"] = 2
+    # cfg["data"]["n_train_sets"] = 2
+    # cfg["data"]["n_splits"] = 2
 
-    # cfg["model"]["model_params"]["n_estimators"] = 2
+    # # cfg["model"]["model_params"]["n_estimators"] = 2
 
-    for k, v in cfg["model"].items():
-        cfg["model"][k]["model_params"]["n_estimators"] = 2
+    # for k, v in cfg["model"].items():
+    #     cfg["model"][k]["model_params"]["n_estimators"] = 2
 
     ensemble_run(cfg)

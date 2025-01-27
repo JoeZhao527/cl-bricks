@@ -81,7 +81,6 @@ base_ensemble = {
         "n_splits": 10,
     },
     "model": {
-        "ctb": base_catboost["model"],
         "xgb": base_xgboost["model"],
         "lgb": base_lgb["model"],
         "rf": base_rf["model"],
