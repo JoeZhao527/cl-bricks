@@ -64,9 +64,9 @@ base_ensemble = {
         "n_splits": 10,
     },
     "model": {
-        "rf": base_rf["model"],
+        "xgb": base_xgboost["model"],
         "lgb": base_lgb["model"],
-        "xgb": base_xgboost["model"]
+        "rf": base_rf["model"],
     },
     "output_base": "./logs/ensemble/base_ensemble"
 }
