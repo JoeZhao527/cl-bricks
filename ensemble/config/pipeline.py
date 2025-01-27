@@ -9,7 +9,8 @@ base_rf = {
             'random_state': 42,
             'n_jobs': 20
         },
-        "none_ratio_thr_list": [0.1, 0.15, 0.35, 0.75, 0.85],
+        # "none_ratio_thr_list": [0.1, 0.15, 0.35, 0.75, 0.85],
+        "none_ratio_thr_list": [0.1, 0.15, 0.2, 0.3, 0.4],
     },
     "output_base": "./logs/ensemble/base_rf"
 }
@@ -28,7 +29,8 @@ base_lgb = {
             'n_jobs': 20,  # Use all available cores
             'objective': 'multiclass',
         },
-        "none_ratio_thr_list": [0.1, 0.15, 0.35, 0.75, 0.85],
+        # "none_ratio_thr_list": [0.1, 0.15, 0.35, 0.75, 0.85],
+        "none_ratio_thr_list": [0.1, 0.15, 0.2, 0.3, 0.4],
     },
     "output_base": "./logs/ensemble/base_lgb"
 }
@@ -54,32 +56,16 @@ base_xgboost = {
             'eval_metric': 'logloss',
             'n_jobs': 20
         },
-        "none_ratio_thr_list": [0.1, 0.15, 0.35, 0.75, 0.85],
+        # "none_ratio_thr_list": [0.1, 0.15, 0.35, 0.75, 0.85],
+        "none_ratio_thr_list": [0.1, 0.15, 0.2, 0.3, 0.4],
     },
     "output_base": "./logs/ensemble/base_xgboost"
-}
-
-base_catboost = {
-    "data": {
-        "n_splits": 10,
-    },
-    "model": {
-        "model_cls": "catboost",
-        "model_params": {
-            'devices': '6',
-            'verbose': 0,
-            'random_state': 42,
-            'thread_count': 20,  # Use all available cores
-            'objective': 'MultiClass',
-        },
-        "none_ratio_thr_list": [0.1, 0.15, 0.35, 0.75, 0.85],
-    },
-    "output_base": "./logs/ensemble/base_ctb"
 }
 
 base_ensemble = {
     "data": {
         "n_splits": 10,
+        "random_state": 96
     },
     "model": {
         "xgb": base_xgboost["model"],

@@ -29,7 +29,7 @@ def run(cfg):
     log(f"Label tier initialization done")
 
     # split folds
-    folds = label_tier.create_folds(cfg["data"]["n_splits"])
+    folds = label_tier.create_folds(cfg["data"]["n_splits"], random_state=cfg["data"]["random_state"])
     log(f"Split to {len(folds)} folds")
 
     # Load and prepare input features

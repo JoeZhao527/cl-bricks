@@ -76,7 +76,7 @@ class LabelTiers:
 
         return padded_label
     
-    def create_folds(self, n_splits=10):
+    def create_folds(self, n_splits=10, random_state=96):
         # Create a label array for stratification
         # We'll use the first non-zero label for each row as the stratification target
         stratify_labels = []
@@ -87,7 +87,7 @@ class LabelTiers:
             stratify_labels.append(first_positive)
         
         # Create StratifiedKFold object
-        skf = StratifiedKFold(n_splits=n_splits, shuffle=True, random_state=42)
+        skf = StratifiedKFold(n_splits=n_splits, shuffle=True, random_state=random_state)
         
         # Generate fold indices
         folds = []
