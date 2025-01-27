@@ -40,7 +40,6 @@ base_xgboost = {
     "model": {
         "model_cls": "xgboost",
         "model_params": {
-            'device': 'gpu:6',
             'n_estimators': 400,       # Number of trees
             'learning_rate': 0.3,     # Default learning rate
             'max_depth': 6,           # Maximum depth of trees
@@ -59,11 +58,30 @@ base_xgboost = {
     "output_base": "./logs/ensemble/base_xgboost"
 }
 
+base_catboost = {
+    "data": {
+        "n_splits": 10,
+    },
+    "model": {
+        "model_cls": "catboost",
+        "model_params": {
+            'devices': '6',
+            'verbose': 0,
+            'random_state': 42,
+            'thread_count': 20,  # Use all available cores
+            'objective': 'MultiClass',
+        },
+        "none_ratio_thr_list": [0.1, 0.15, 0.35, 0.75, 0.85],
+    },
+    "output_base": "./logs/ensemble/base_ctb"
+}
+
 base_ensemble = {
     "data": {
         "n_splits": 10,
     },
     "model": {
+        "ctb": base_catboost["model"],
         "xgb": base_xgboost["model"],
         "lgb": base_lgb["model"],
         "rf": base_rf["model"],
