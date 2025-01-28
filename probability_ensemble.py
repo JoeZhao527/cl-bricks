@@ -95,7 +95,7 @@ if __name__ == '__main__':
     
     final_res = aggregate(prediction_list, listtestfile)
 
-    print(check_pred_num(final_res))
+    print(check_pred_num(final_res).value_counts())
 
     arr = final_res.drop(columns=["filename"]).values
     np.save("0128_prob_ensemble.npy", np.stack(np.where(arr == 1)))
