@@ -32,10 +32,6 @@ def run(cfg):
     folds = label_tier.create_folds(cfg["data"]["n_splits"], random_state=cfg["data"]["random_state"])
     log(f"Split to {len(folds)} folds")
 
-    # split folds
-    folds = label_tier.create_folds(cfg["data"]["n_splits"], random_state=cfg["data"]["random_state"])
-    log(f"Split to {len(folds)} folds")
-
     # PREPARE ORIGINAL INPUT FEATURES
     # Load and prepare input features
     log(f"Start to load training data")
@@ -107,6 +103,7 @@ def run(cfg):
             assert _df.columns.equals(check_cols), f"Mismatch columns in test!"
 
         log(f"Used columns: {len(train_sets[0].columns)}")
+        log(f"Used columns: {train_sets[0].columns}")
 
         # get test filenames
         zipftest = ZipFile(PATHS.test_zip_path, 'r')
