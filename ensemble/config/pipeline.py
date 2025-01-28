@@ -9,8 +9,8 @@ base_rf = {
             'random_state': 42,
             'n_jobs': 20
         },
-        # "none_ratio_thr_list": [0.1, 0.15, 0.35, 0.75, 0.85],
-        "none_ratio_thr_list": [0.1, 0.15, 0.2, 0.3, 0.4],
+        "none_ratio_thr_list": [0.1, 0.15, 0.35, 0.75, 0.85],
+        # "none_ratio_thr_list": [0.1, 0.15, 0.2, 0.3, 0.4],
     },
     "output_base": "./logs/ensemble/base_rf"
 }
@@ -29,8 +29,8 @@ base_lgb = {
             'n_jobs': 20,  # Use all available cores
             'objective': 'multiclass',
         },
-        # "none_ratio_thr_list": [0.1, 0.15, 0.35, 0.75, 0.85],
-        "none_ratio_thr_list": [0.1, 0.15, 0.2, 0.3, 0.4],
+        "none_ratio_thr_list": [0.1, 0.15, 0.35, 0.75, 0.85],
+        # "none_ratio_thr_list": [0.1, 0.15, 0.2, 0.3, 0.4],
     },
     "output_base": "./logs/ensemble/base_lgb"
 }
@@ -56,8 +56,8 @@ base_xgboost = {
             'eval_metric': 'logloss',
             'n_jobs': 20
         },
-        # "none_ratio_thr_list": [0.1, 0.15, 0.35, 0.75, 0.85],
-        "none_ratio_thr_list": [0.1, 0.15, 0.2, 0.3, 0.4],
+        "none_ratio_thr_list": [0.1, 0.15, 0.35, 0.75, 0.85],
+        # "none_ratio_thr_list": [0.1, 0.15, 0.2, 0.3, 0.4],
     },
     "output_base": "./logs/ensemble/base_xgboost"
 }
@@ -65,7 +65,7 @@ base_xgboost = {
 base_ensemble = {
     "data": {
         "n_splits": 10,
-        "random_state": 96
+        "random_state": 42
     },
     "model": {
         "xgb": base_xgboost["model"],
@@ -73,4 +73,22 @@ base_ensemble = {
         "rf": base_rf["model"],
     },
     "output_base": "./logs/ensemble/base_ensemble"
+}
+
+stacking_ensemble = {
+    "data": {
+        "n_splits": 10,
+        "random_state": 42,
+        "prev_stage": {
+            "xgb": "./logs/ensemble/base_ensemble/01_27_2025-16_33_48/xgb",
+            "lgb": "./logs/ensemble/base_ensemble/01_27_2025-16_33_48/lgb",
+            "rf": "./logs/ensemble/base_ensemble/01_27_2025-16_33_48/rf"
+        }
+    },
+    "model": {
+        "xgb": base_xgboost["model"],
+        "lgb": base_lgb["model"],
+        "rf": base_rf["model"],
+    },
+    "output_base": "./logs/ensemble/stack_ensemble"
 }
