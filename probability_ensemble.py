@@ -50,6 +50,8 @@ def aggregate(pred_list: List[pd.DataFrame], train_y: pd.DataFrame, weights=None
 
     level_pred_list = get_test_agg(dataset_preds)
     stacked_res = get_stacked_res(level_pred_list)
+    print(stacked_res)
+    exit(0)
     final_res = post_processing(stacked_res, LABEL_NAMES, list(train_y['filename']))
 
     return final_res
@@ -60,27 +62,27 @@ if __name__ == '__main__':
     prob_prediction_paths = {
         "xgb": [
             "./logs/ensemble/base_ensemble/01_27_2025-16_33_48/xgb/test_predictions/tst_preds_0.csv",
-            "./logs/ensemble/base_ensemble/01_27_2025-16_33_48/xgb/test_predictions/tst_preds_1.csv",
-            "./logs/ensemble/base_ensemble/01_27_2025-16_33_48/xgb/test_predictions/tst_preds_2.csv",
-            "./logs/ensemble/base_ensemble/01_27_2025-16_33_48/xgb/test_predictions/tst_preds_3.csv",
-            "./logs/ensemble/base_ensemble/01_27_2025-16_33_48/xgb/test_predictions/tst_preds_4.csv",
-            "./logs/ensemble/base_ensemble/01_27_2025-16_33_48/xgb/test_predictions/tst_preds_5.csv",
+            # "./logs/ensemble/base_ensemble/01_27_2025-16_33_48/xgb/test_predictions/tst_preds_1.csv",
+            # "./logs/ensemble/base_ensemble/01_27_2025-16_33_48/xgb/test_predictions/tst_preds_2.csv",
+            # "./logs/ensemble/base_ensemble/01_27_2025-16_33_48/xgb/test_predictions/tst_preds_3.csv",
+            # "./logs/ensemble/base_ensemble/01_27_2025-16_33_48/xgb/test_predictions/tst_preds_4.csv",
+            # "./logs/ensemble/base_ensemble/01_27_2025-16_33_48/xgb/test_predictions/tst_preds_5.csv",
         ],
         "lgb": [
             "./logs/ensemble/base_ensemble/01_27_2025-16_33_48/lgb/test_predictions/tst_preds_0.csv",
-            "./logs/ensemble/base_ensemble/01_27_2025-16_33_48/lgb/test_predictions/tst_preds_1.csv",
-            "./logs/ensemble/base_ensemble/01_27_2025-16_33_48/lgb/test_predictions/tst_preds_2.csv",
-            "./logs/ensemble/base_ensemble/01_27_2025-16_33_48/lgb/test_predictions/tst_preds_3.csv",
-            "./logs/ensemble/base_ensemble/01_27_2025-16_33_48/lgb/test_predictions/tst_preds_4.csv",
-            "./logs/ensemble/base_ensemble/01_27_2025-16_33_48/lgb/test_predictions/tst_preds_5.csv",
+            # "./logs/ensemble/base_ensemble/01_27_2025-16_33_48/lgb/test_predictions/tst_preds_1.csv",
+            # "./logs/ensemble/base_ensemble/01_27_2025-16_33_48/lgb/test_predictions/tst_preds_2.csv",
+            # "./logs/ensemble/base_ensemble/01_27_2025-16_33_48/lgb/test_predictions/tst_preds_3.csv",
+            # "./logs/ensemble/base_ensemble/01_27_2025-16_33_48/lgb/test_predictions/tst_preds_4.csv",
+            # "./logs/ensemble/base_ensemble/01_27_2025-16_33_48/lgb/test_predictions/tst_preds_5.csv",
         ],
         "rf": [
             "./logs/ensemble/base_ensemble/01_27_2025-16_33_48/rf/test_predictions/tst_preds_0.csv",
-            "./logs/ensemble/base_ensemble/01_27_2025-16_33_48/rf/test_predictions/tst_preds_1.csv",
-            "./logs/ensemble/base_ensemble/01_27_2025-16_33_48/rf/test_predictions/tst_preds_2.csv",
-            "./logs/ensemble/base_ensemble/01_27_2025-16_33_48/rf/test_predictions/tst_preds_3.csv",
-            "./logs/ensemble/base_ensemble/01_27_2025-16_33_48/rf/test_predictions/tst_preds_4.csv",
-            "./logs/ensemble/base_ensemble/01_27_2025-16_33_48/rf/test_predictions/tst_preds_5.csv",
+            # "./logs/ensemble/base_ensemble/01_27_2025-16_33_48/rf/test_predictions/tst_preds_1.csv",
+            # "./logs/ensemble/base_ensemble/01_27_2025-16_33_48/rf/test_predictions/tst_preds_2.csv",
+            # "./logs/ensemble/base_ensemble/01_27_2025-16_33_48/rf/test_predictions/tst_preds_3.csv",
+            # "./logs/ensemble/base_ensemble/01_27_2025-16_33_48/rf/test_predictions/tst_preds_4.csv",
+            # "./logs/ensemble/base_ensemble/01_27_2025-16_33_48/rf/test_predictions/tst_preds_5.csv",
         ],
     }
 
