@@ -23,7 +23,9 @@ def level_split(preds: pd.DataFrame) -> List[pd.DataFrame]:
     # Each entry in the pred_list 
     preds_list = []
     for cols in col_tiers:
-        preds_list.append(preds[cols])
+        split_pred = preds[cols]
+        split_pred = split_pred.rename(columns={col: col[:-2] for col in split_pred.columns})
+        preds_list.append(split_pred)
 
     return preds_list
 
