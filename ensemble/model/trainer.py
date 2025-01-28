@@ -2,6 +2,9 @@ from typing import List
 import numpy as np
 import pandas as pd
 from datetime import datetime
+import os
+import pickle
+
 from sklearn.metrics import precision_recall_fscore_support
 
 from ensemble.config.labels import LABEL_TIERS, LABEL_NAMES
@@ -210,6 +213,7 @@ class BaseModel:
         train_input: List[pd.DataFrame],
         padded_labels,
         folds: List[dict],
+        model_save_dir: str = None,
     ):
         self.train_input = train_input
         self.raw_feat_num = len(train_input[0].columns)
@@ -218,8 +222,22 @@ class BaseModel:
         self.none_ratio_thr_list = none_ratio_thr_list
         self.padded_labels = padded_labels
         self.folds = folds
+
+        # Contains a list of list
+        # After training, classifiers[i] will contain the models of each fold in tier_`i`
+        # E.g. for 10 folds cross validation, its shape will be (5, 10), where the first dimension is 
+        # tier and the second dimension is folds
         self.classifiers = []
+
+        # Same structure as the `self.classifiers`
         self.val_predictions = []
+
+        # Whether to save model or keep it in the memory
+        # Will save model into model_save_dir if provided. This is suitable for low memory machine.
+        self.model_save_dir = model_save_dir
+        if model_save_dir != None:
+            os.makedirs(model_save_dir)
+            print(f"[{datetime.now()}] Initialized model saving directory: {model_save_dir}")
 
     def train(self):
         # Train one model for each tier
@@ -235,6 +253,20 @@ class BaseModel:
                 none_ratio_thr=self.none_ratio_thr_list[i],
                 level_id=i
             )
+
+            # dump the models and save paths only if model_save_dir is provided
+            if self.model_save_dir:
+                _classifiers_paths = []
+                for fid, clf in enumerate(_classifiers):
+                    _clf_path = os.path.join(self.model_save_dir, f"tier_{i}_fold_{fid}.pkl")
+                    with open(_clf_path, "wb") as f:
+                        pickle.dump(clf, f, protocol=pickle.HIGHEST_PROTOCOL)
+
+                    print(f"[{datetime.now()}] level {i} fold model {fid} to saved to {_clf_path}")
+
+                _classifiers_paths.append(_clf_path)
+                _classifiers = _classifiers_paths
+
             self.classifiers.append(_classifiers)
             self.val_predictions.append(_val_predictions)
 

@@ -68,12 +68,17 @@ def run(cfg):
     test_filenames = zipftest.namelist()[1:]
     log(f"Loaded test filenames")
 
+    model_save_dir = None
+    if cfg.get("model_save_dir", None):
+        model_save_dir = os.path.join(output_base, cfg["model"]["model_save_dir"])
+
     # MODEL TRAINING
     # Initialize trainer
     model = BaseModel(
         model_cls=model_zoo.get(cfg["model"]["model_cls"]),
         model_params=cfg["model"]["model_params"],
         none_ratio_thr_list=cfg["model"]["none_ratio_thr_list"],
+        model_save_dir=model_save_dir,
         folds=folds,
         train_input=train_sets,
         padded_labels=label_tier.padded_labels,
@@ -101,7 +106,7 @@ def run(cfg):
         columnlist=LABEL_NAMES,
         listtestfile=test_filenames
     )
-    log(f"Test inferencing completed.")
+    log(f"Test inferencing completed, saving the results")
 
     test_prediction_path = os.path.join(output_base, "tst_preds.csv")
     test_prediction.to_csv(test_prediction_path, index=False)

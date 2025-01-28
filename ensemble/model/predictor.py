@@ -4,15 +4,25 @@ import numpy as np
 from ensemble.config.labels import LABEL_TIERS
 from datetime import datetime
 from typing import Tuple
+import pickle
 
 
 def make_predictions_with_models(classifiers, test_data, level_id):
     test_preds_all = []
     for clf in tqdm(classifiers, desc=f"[{datetime.now()}] predicting level {level_id}"):
+        # Load the classifier if a checkpoint path is given
+        if isinstance(clf, str):
+            with open(clf, 'rb') as f:
+                clf = pickle.load(f)
+        
+        # Make prediction
         pred = clf.predict_proba(test_data)
         test_preds_all.append(
             pd.DataFrame(data=pred, columns=[f"{col}_{level_id}" for col in clf.get_class_names()])
         )
+
+        # In each iteration of the loop, the previous `clf` will be covered,
+        # and python will handle the garbage cleaning automatically, so it saves memories
     return test_preds_all
 
 def get_pred_list(classifiers, test_input):

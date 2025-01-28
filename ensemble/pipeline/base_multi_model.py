@@ -76,10 +76,15 @@ def run(cfg):
         _output_dir = os.path.join(output_base, base_model_name)
         os.makedirs(_output_dir)
         
+        model_save_dir = None
+        if base_model_cfg.get("model_save_dir", None):
+            model_save_dir = os.path.join(_output_dir, base_model_cfg["model_save_dir"])
+
         model = BaseModel(
             model_cls=model_zoo.get(base_model_cfg["model_cls"]),
             model_params=base_model_cfg["model_params"],
             none_ratio_thr_list=base_model_cfg["none_ratio_thr_list"],
+            model_save_dir=model_save_dir,
             folds=folds,
             train_input=train_sets,
             padded_labels=label_tier.padded_labels,
@@ -112,7 +117,7 @@ def run(cfg):
                 columnlist=LABEL_NAMES,
                 listtestfile=test_filenames
             )
-            log(f"Test inferencing completed.")
+            log(f"Test inferencing completed, saving the results")
 
             test_prediction_path = os.path.join(test_output_dir, f"tst_preds_{tst_idx}.csv")
             test_prediction.to_csv(test_prediction_path, index=False)

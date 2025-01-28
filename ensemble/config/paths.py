@@ -11,7 +11,8 @@ class PATHS:
         "./downloads/train_data_features_v3_fixed/train_features_split1_4_v3.csv",
         "./downloads/train_data_features_v3_fixed/train_features_split2_4_v3.csv",
         "./downloads/train_data_features_v3_fixed/train_features_split3_4_v3.csv",
-        "./downloads/train_data_features_v3_fixed/train_features_split4_4_v3.csv"
+        "./downloads/train_data_features_v3_fixed/train_features_split4_4_v3.csv",
+        # TODO: add 5 splits training data
     ]
 
     test_x_path = "./downloads/test_features_full_v3.csv"

@@ -13,6 +13,7 @@ base_rf = {
             'n_jobs': 20
         },
         "none_ratio_thr_list": [0.1, 0.15, 0.35, 0.75, 0.85],
+        "model_save_dir": "base_rf_models"  # this will be the directory inside `output_base`
     },
     "output_base": "./logs/ensemble/base_rf"
 }
@@ -33,6 +34,7 @@ base_lgb = {
             'objective': 'multiclass',
         },
         "none_ratio_thr_list": [0.1, 0.15, 0.35, 0.75, 0.85],
+        "model_save_dir": "base_lgb_models"  # this will be the directory inside `output_base`
     },
     "output_base": "./logs/ensemble/base_lgb"
 }
@@ -60,6 +62,7 @@ base_xgboost = {
             'n_jobs': 20
         },
         "none_ratio_thr_list": [0.1, 0.15, 0.35, 0.75, 0.85],
+        "model_save_dir": "base_xgb_models"  # this will be the directory inside `output_base`
     },
     "output_base": "./logs/ensemble/base_xgboost"
 }
@@ -109,6 +112,7 @@ weighted_rf = {
             'class_weight': base_rf_performance_weights
         },
         "none_ratio_thr_list": [0.1, 0.15, 0.35, 0.75, 0.85],
+        "model_save_dir": "weighted_rf_models"  # this will be the directory inside `output_base`
     },
     "output_base": "./logs/ensemble/weighted_rf"
 }
