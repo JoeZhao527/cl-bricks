@@ -86,12 +86,12 @@ def run(cfg):
         
         
         log(f"Start to load testing data")
-        base_tst_res = pd.read_csv(os.path.join(base_output_path, "test_predictions"))
+        base_tst_path = os.path.join(base_output_path, "test_predictions")
         
         for tid in range(len(PATHS.test_x_paths)):
             new_tst_df = pd.concat([
                 test_sets[tid],
-                pd.read_csv(os.path.join(base_tst_res, f"tst_preds_{tid}.csv"))
+                pd.read_csv(os.path.join(base_tst_path, f"tst_preds_{tid}.csv"))
             ], axis=1)
 
             new_tst_df = new_tst_df.rename(columns={col: f"{col}_S1" for col in new_tst_df.columns})
