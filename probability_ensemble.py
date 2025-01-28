@@ -85,8 +85,8 @@ if __name__ == '__main__':
     }
 
     from zipfile import ZipFile
-    zipftest = ZipFile('../downloads/test_X_v0.1.0.zip', 'r')
-    listtestfile = zipftest.namelist()[1:]
+    zipftest = ZipFile(PATHS.test_zip_path, 'r')
+    listtestfile = list(zipftest.namelist()[1:])
 
     prediction_list = []
     for k, paths in prob_prediction_paths.items():
