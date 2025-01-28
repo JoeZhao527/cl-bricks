@@ -1,74 +1,62 @@
-<div align="center">
+# BBB Multilabel Classification
 
-# Your Project Name
+## Getting Start
+### Data Preparation
+The following data needs to be prepared / downloaded / preprocessed before starts
 
-<a href="https://pytorch.org/get-started/locally/"><img alt="PyTorch" src="https://img.shields.io/badge/PyTorch-ee4c2c?logo=pytorch&logoColor=white"></a>
-<a href="https://pytorchlightning.ai/"><img alt="Lightning" src="https://img.shields.io/badge/-Lightning-792ee5?logo=pytorchlightning&logoColor=white"></a>
-<a href="https://hydra.cc/"><img alt="Config: Hydra" src="https://img.shields.io/badge/Config-Hydra-89b8cd"></a>
-<a href="https://github.com/ashleve/lightning-hydra-template"><img alt="Template" src="https://img.shields.io/badge/-Lightning--Hydra--Template-017F2F?style=flat&logo=github&labelColor=gray"></a><br>
-[![Paper](http://img.shields.io/badge/paper-arxiv.1001.2234-B31B1B.svg)](https://www.nature.com/articles/nature14539)
-[![Conference](http://img.shields.io/badge/AnyConference-year-4b44ce.svg)](https://papers.nips.cc/paper/2020)
+- `train_y_v0.1.0.csv`: labels for each training sample, downloaded from https://www.aicrowd.com/challenges/brick-by-brick-2024/dataset_files
+- `test_X_v0.1.0.zip`: raw signals for each testing sample, downloaded from https://www.aicrowd.com/challenges/brick-by-brick-2024/dataset_files
+- `test_data_features_v3_fixed/`: a directory that contains all the preprocessed test features
+- `train_data_features_v3_fixed/`: a directory that contains all the preprocessed train features
 
-</div>
+### Model Training
+Update `main.py` to select different configuration. Start training with `python main.py`. Intermediate results and final results will be saved to `logs/`.
 
-## Description
+## Further Configurations
+### Project Structure
+`main.py`: entry point.
 
-What it does
+`collect.py`: collect and aggregating the prediction results. After running `python main.py`, run this to prepare a `.npy` file that contains the binary label for each class for each sample in the testing set.
 
-## Installation
+`notebooks/ensemble.ipynb`: load and ensemble prediction results from different models. Use this to aggregate prediction results from different models
 
-#### Pip
+`ensemble/`: contains the code for model training, validation and prediction.
 
-```bash
-# clone project
-git clone https://github.com/YourGithubName/your-repo-name
-cd your-repo-name
+`ensemble/config`: pipeline configuration files
 
-# [OPTIONAL] create conda environment
-conda create -n myenv python=3.9
-conda activate myenv
+`ensemble/data`: feature (normalization and feature crossing) and label (tier definition) processing functions. 
 
-# install pytorch according to instructions
-# https://pytorch.org/get-started/
+`ensemble/model`: model training and prediction functions.
 
-# install requirements
-pip install -r requirements.txt
+`ensemble/pipeline`: data loading, processing, model training, validation and prediction pipeline. Each `.py` under this directory is a pipeline, the 0.575 f1 score pipeline is in `base_multi_model.py`.
+
+### Configurations
+`ensemble/config/feature_names.py`
+```
+FEATURE_NAMES: base feature columns that will be used for train and test. Additional columns were dynamically appended during training.
 ```
 
-#### Conda
+`ensemble/config/labels.py`
+```
+LABEL_TIERS: Number of tiers, fixed to 5.
 
-```bash
-# clone project
-git clone https://github.com/YourGithubName/your-repo-name
-cd your-repo-name
+LABEL_NAMES: All label names that needs to be predicted in the BBB dataset
 
-# create conda environment and install dependencies
-conda env create -f environment.yaml -n myenv
-
-# activate conda environment
-conda activate myenv
+LEVEL_LABLES: A list of list contains labels in each tier
 ```
 
-## How to run
-
-Train model with default configuration
-
-```bash
-# train on CPU
-python src/train.py trainer=cpu
-
-# train on GPU
-python src/train.py trainer=gpu
+`ensemble/config/paths.py`
+```
+PATHS: A class contains all the input data file paths.
 ```
 
-Train model with chosen experiment configuration from [configs/experiment/](configs/experiment/)
-
-```bash
-python src/train.py experiment=experiment_name.yaml
+`ensemble/config/pipeline.py`
 ```
+base_rf: baseline single random forest, use it with ensemble/pipeline/base_random_forest.py
 
-You can override any parameter from command line like this
+base_lgb: baseline single lightgbm, use it with ensemble/pipeline/base_random_forest.py
 
-```bash
-python src/train.py trainer.max_epochs=20 data.batch_size=64
+base_xgb: baseline single xgboost, use it with ensemble/pipeline/base_random_forest.py
+
+base_ensemble: ensemble of the three models, use it with ensemble/pipeline/base_multi_model.py
 ```
