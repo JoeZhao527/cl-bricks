@@ -2,7 +2,7 @@ from .class_weight import base_rf_performance_weights
 
 base_rf = {
     "data": {
-        "n_splits": 10,
+        "n_splits": 10, # controls number of cross validation
         "random_state": 42,
     },
     "model": {
@@ -13,27 +13,8 @@ base_rf = {
             'n_jobs': 20
         },
         "none_ratio_thr_list": [0.1, 0.15, 0.35, 0.75, 0.85],
-        # "none_ratio_thr_list": [0.1, 0.15, 0.2, 0.3, 0.4],
     },
     "output_base": "./logs/ensemble/base_rf"
-}
-
-weighted_rf = {
-    "data": {
-        "n_splits": 10,
-        "random_state": 42,
-    },
-    "model": {
-        "model_cls": "random_forest",
-        "model_params": {
-            'n_estimators': 100,
-            'random_state': 42,
-            'n_jobs': 20,
-            'class_weight': base_rf_performance_weights
-        },
-        "none_ratio_thr_list": [0.1, 0.15, 0.35, 0.75, 0.85],
-    },
-    "output_base": "./logs/ensemble/weighted_rf"
 }
 
 base_lgb = {
@@ -48,11 +29,10 @@ base_lgb = {
             'n_estimators': 100,
             'learning_rate': 0.1,
             'random_state': 42,
-            'n_jobs': 20,  # Use all available cores
+            'n_jobs': 20,
             'objective': 'multiclass',
         },
         "none_ratio_thr_list": [0.1, 0.15, 0.35, 0.75, 0.85],
-        # "none_ratio_thr_list": [0.1, 0.15, 0.2, 0.3, 0.4],
     },
     "output_base": "./logs/ensemble/base_lgb"
 }
@@ -80,7 +60,6 @@ base_xgboost = {
             'n_jobs': 20
         },
         "none_ratio_thr_list": [0.1, 0.15, 0.35, 0.75, 0.85],
-        # "none_ratio_thr_list": [0.1, 0.15, 0.2, 0.3, 0.4],
     },
     "output_base": "./logs/ensemble/base_xgboost"
 }
@@ -114,4 +93,22 @@ stacking_ensemble = {
         "rf": base_rf["model"],
     },
     "output_base": "./logs/ensemble/stack_ensemble"
+}
+
+weighted_rf = {
+    "data": {
+        "n_splits": 10,
+        "random_state": 42,
+    },
+    "model": {
+        "model_cls": "random_forest",
+        "model_params": {
+            'n_estimators': 100,
+            'random_state': 42,
+            'n_jobs': 20,
+            'class_weight': base_rf_performance_weights
+        },
+        "none_ratio_thr_list": [0.1, 0.15, 0.35, 0.75, 0.85],
+    },
+    "output_base": "./logs/ensemble/weighted_rf"
 }
