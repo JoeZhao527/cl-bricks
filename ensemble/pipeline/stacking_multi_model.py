@@ -72,7 +72,7 @@ def run(cfg):
 
     # Get validation prediciton results from previous stage
     for base_model_name, base_output_path in enumerate(cfg["data"]["prev_stage"]):
-        log(f"Start stacking {base_model_name}")
+        log(f"Start stacking {base_model_name}, with output from {base_output_path}")
         log(f"Start to load training data")
         
         # Load and prepare input features
