@@ -71,7 +71,7 @@ def run(cfg):
     log(f"Got {len(train_sets[0].columns)} feature columns after feature crossing.")
 
     # Get validation prediciton results from previous stage
-    for base_model_name, base_output_path in enumerate(cfg["data"]["prev_stage"]):
+    for base_model_name, base_output_path in cfg["data"]["prev_stage"].items():
         log(f"Start stacking {base_model_name}, with output from {base_output_path}")
         log(f"Start to load training data")
         
