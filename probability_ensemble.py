@@ -46,14 +46,10 @@ def aggregate(pred_list: List[pd.DataFrame], train_y: pd.DataFrame, weights=None
         preds_tier_split = level_split(preds)
         for i, preds_tier in enumerate(preds_tier_split):
             dataset_preds[i].append(preds_tier)
-    
-    print(len(dataset_preds))
-    print(len(dataset_preds[0]))
-
+            
     level_pred_list = get_test_agg(dataset_preds)
     stacked_res = get_stacked_res(level_pred_list)
-    print(stacked_res)
-    exit(0)
+
     final_res = post_processing(stacked_res, LABEL_NAMES, list(train_y['filename']))
 
     return final_res
