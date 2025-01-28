@@ -37,7 +37,7 @@ def check_pred_num(_final_res, thr=0.5):
     return (filtered_df >= thr).sum(axis=1)
 
 
-def aggregate(pred_list: List[pd.DataFrame], train_y: pd.DataFrame, weights=None):
+def aggregate(pred_list: List[pd.DataFrame], filenames: list, weights=None):
     if weights != None:
         raise NotImplementedError
     
@@ -46,11 +46,11 @@ def aggregate(pred_list: List[pd.DataFrame], train_y: pd.DataFrame, weights=None
         preds_tier_split = level_split(preds)
         for i, preds_tier in enumerate(preds_tier_split):
             dataset_preds[i].append(preds_tier)
-            
+
     level_pred_list = get_test_agg(dataset_preds)
     stacked_res = get_stacked_res(level_pred_list)
 
-    final_res = post_processing(stacked_res, LABEL_NAMES, list(train_y['filename']))
+    final_res = post_processing(stacked_res, LABEL_NAMES, filenames)
 
     return final_res
 
@@ -84,14 +84,16 @@ if __name__ == '__main__':
         ],
     }
 
-    train_y = pd.read_csv(PATHS.train_y_path)
+    from zipfile import ZipFile
+    zipftest = ZipFile('../downloads/test_X_v0.1.0.zip', 'r')
+    listtestfile = zipftest.namelist()[1:]
 
     prediction_list = []
     for k, paths in prob_prediction_paths.items():
         for p in tqdm(paths, desc=f"Loading {k} results:"):
             prediction_list.append(pd.read_csv(p))
     
-    final_res = aggregate(prediction_list, train_y=train_y)
+    final_res = aggregate(prediction_list, listtestfile)
 
     print(check_pred_num(final_res))
 
