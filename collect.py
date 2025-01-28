@@ -40,7 +40,7 @@ if __name__ == '__main__':
     thr = 0.4
 
     avg = [
-        pd.read_csv(os.path.join(base_dir, "xgb_rf/test_predictions", f"final_result_{i}.csv"))
+        pd.read_csv(os.path.join(base_dir, "xgb_lgb/test_predictions", f"final_result_{i}.csv"))
         for i in tqdm(range(6), desc="Loading")
     ]
 
@@ -54,4 +54,4 @@ if __name__ == '__main__':
     arr = m_res.drop(columns=["filename"]).values
 
     # REPLACE THIS PATH 
-    np.save("0128_stack_xgb_rf.npy", np.stack(np.where(arr == 1)))
+    np.save("0128_stack_xgb_lgb.npy", np.stack(np.where(arr == 1)))
