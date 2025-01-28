@@ -104,6 +104,8 @@ def run(cfg):
         for _df in test_sets:
             assert _df.columns.equals(check_cols), f"Mismatch columns in test!"
 
+        log(f"Used columns: {len(train_sets[0].columns)}")
+
         # get test filenames
         zipftest = ZipFile(PATHS.test_zip_path, 'r')
         test_filenames = zipftest.namelist()[1:]

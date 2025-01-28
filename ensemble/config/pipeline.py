@@ -1,6 +1,7 @@
 base_rf = {
     "data": {
         "n_splits": 10,
+        "random_state": 42,
     },
     "model": {
         "model_cls": "random_forest",
@@ -18,6 +19,7 @@ base_rf = {
 base_lgb = {
     "data": {
         "n_splits": 10,
+        "random_state": 42,
     },
     "model": {
         "model_cls": "lightgbm",
@@ -38,6 +40,7 @@ base_lgb = {
 base_xgboost = {
     "data": {
         "n_splits": 10,
+        "random_state": 42,
     },
     "model": {
         "model_cls": "xgboost",
