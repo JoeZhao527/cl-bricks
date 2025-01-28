@@ -34,12 +34,13 @@ def check_pred_num(_final_res, thr=0.4):
     return (filtered_df >= thr).sum(axis=1)
 
 if __name__ == '__main__':
+    # REPLACE THIS PATH WITH THE ACTUAL OUTPUT PATH
     # base_dir = "./logs/ensemble/base_ensemble/01_27_2025-16_33_48"
-    base_dir = "./logs/ensemble/base_ensemble/01_27_2025-21_34_30"
-    thr = 0.5
+    base_dir = "./logs/ensemble/stack_ensemble/01_28_2025-14_52_59"
+    thr = 0.4
 
     avg = [
-        pd.read_csv(os.path.join(base_dir, "rf/test_predictions", f"final_result_{i}.csv"))
+        pd.read_csv(os.path.join(base_dir, "xgb_rf/test_predictions", f"final_result_{i}.csv"))
         for i in tqdm(range(6), desc="Loading")
     ]
 
@@ -51,4 +52,6 @@ if __name__ == '__main__':
         m_res[col] = (m_res[col] > thr).astype(int)
 
     arr = m_res.drop(columns=["filename"]).values
-    np.save("0127_rf_recall.npy", np.stack(np.where(arr == 1)))
+
+    # REPLACE THIS PATH 
+    np.save("0128_stack_xgb_rf.npy", np.stack(np.where(arr == 1)))
