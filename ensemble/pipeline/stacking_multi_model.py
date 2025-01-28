@@ -97,9 +97,6 @@ def run(cfg):
             new_tst_df = new_tst_df.rename(columns={col: f"{col}_S1" for col in new_tst_df.columns})
 
             test_sets[tid] = new_tst_df
-            
-        print(list(train_sets[0].columns))
-        print(list(test_sets[0].columns))
 
         # check feature columns
         check_cols = train_sets[0].columns
