@@ -175,9 +175,8 @@ weighted_ensemble = {
         "random_state": 42
     },
     "model": {
-        "xgb": weighted_xgboost["model"],
-        "lgb": weighted_lgb["model"],
         "rf": weighted_rf["model"],
+        "xgb": weighted_xgboost["model"],
     },
     "output_base": "./logs/ensemble/weighted_ensemble"
 }
