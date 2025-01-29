@@ -98,4 +98,4 @@ if __name__ == '__main__':
     print(check_pred_num(final_res).value_counts())
 
     arr = final_res.drop(columns=["filename"]).values
-    np.save("0129_prob_ensemble_xgb_rf.npy", np.stack(np.where(arr == 1)))
+    np.save("0129_prob_ensemble_xgb_lgb_rf.npy", np.stack(np.where(arr == 1)))
