@@ -125,6 +125,7 @@ def train_base_model(
         
         # Create and train Random Forest model
         model = model_class(**params)
+        print(model)
         model.fit(train_X_fold, train_y_fold)
         
         classifiers.append(model)
