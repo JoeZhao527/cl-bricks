@@ -59,20 +59,20 @@ if __name__ == '__main__':
     # UPDATE THESE PATHS FOR ENSEMBLE
     prob_prediction_paths = {
         "xgb": [
-            "./logs/ensemble/base_ensemble/01_27_2025-16_33_48/xgb/test_predictions/tst_preds_0.csv",
-            "./logs/ensemble/base_ensemble/01_27_2025-16_33_48/xgb/test_predictions/tst_preds_1.csv",
-            "./logs/ensemble/base_ensemble/01_27_2025-16_33_48/xgb/test_predictions/tst_preds_2.csv",
-            "./logs/ensemble/base_ensemble/01_27_2025-16_33_48/xgb/test_predictions/tst_preds_3.csv",
-            "./logs/ensemble/base_ensemble/01_27_2025-16_33_48/xgb/test_predictions/tst_preds_4.csv",
-            "./logs/ensemble/base_ensemble/01_27_2025-16_33_48/xgb/test_predictions/tst_preds_5.csv",
+            "./logs/ensemble/base_ensemble/01_29_2025-18_49_29/xgb/test_predictions/tst_preds_0.csv",
+            "./logs/ensemble/base_ensemble/01_29_2025-18_49_29/xgb/test_predictions/tst_preds_1.csv",
+            "./logs/ensemble/base_ensemble/01_29_2025-18_49_29/xgb/test_predictions/tst_preds_2.csv",
+            "./logs/ensemble/base_ensemble/01_29_2025-18_49_29/xgb/test_predictions/tst_preds_3.csv",
+            "./logs/ensemble/base_ensemble/01_29_2025-18_49_29/xgb/test_predictions/tst_preds_4.csv",
+            "./logs/ensemble/base_ensemble/01_29_2025-18_49_29/xgb/test_predictions/tst_preds_5.csv",
         ],
         "rf": [
-            "./logs/ensemble/base_ensemble/01_27_2025-16_33_48/rf/test_predictions/tst_preds_0.csv",
-            "./logs/ensemble/base_ensemble/01_27_2025-16_33_48/rf/test_predictions/tst_preds_1.csv",
-            "./logs/ensemble/base_ensemble/01_27_2025-16_33_48/rf/test_predictions/tst_preds_2.csv",
-            "./logs/ensemble/base_ensemble/01_27_2025-16_33_48/rf/test_predictions/tst_preds_3.csv",
-            "./logs/ensemble/base_ensemble/01_27_2025-16_33_48/rf/test_predictions/tst_preds_4.csv",
-            "./logs/ensemble/base_ensemble/01_27_2025-16_33_48/rf/test_predictions/tst_preds_5.csv",
+            "./logs/ensemble/base_ensemble/01_29_2025-18_49_29/rf/test_predictions/tst_preds_0.csv",
+            "./logs/ensemble/base_ensemble/01_29_2025-18_49_29/rf/test_predictions/tst_preds_1.csv",
+            "./logs/ensemble/base_ensemble/01_29_2025-18_49_29/rf/test_predictions/tst_preds_2.csv",
+            "./logs/ensemble/base_ensemble/01_29_2025-18_49_29/rf/test_predictions/tst_preds_3.csv",
+            "./logs/ensemble/base_ensemble/01_29_2025-18_49_29/rf/test_predictions/tst_preds_4.csv",
+            "./logs/ensemble/base_ensemble/01_29_2025-18_49_29/rf/test_predictions/tst_preds_5.csv",
         ],
     }
 
@@ -96,4 +96,4 @@ if __name__ == '__main__':
     arr = final_res.drop(columns=["filename"]).values
 
     # UPDATE THE PATH FOR COMPRESSED RES
-    np.save("0129_prob_ensemble_xgb_rf_only.npy", np.stack(np.where(arr == 1)))
+    np.save("0129_prob_ensemble_class_weight.npy", np.stack(np.where(arr == 1)))
