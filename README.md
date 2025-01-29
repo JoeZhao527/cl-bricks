@@ -16,9 +16,7 @@ Update `main.py` to select different configuration. Start training with `python 
 ### Project Structure
 `main.py`: entry point.
 
-`collect.py`: collect and aggregating the prediction results. After running `python main.py`, run this to prepare a `.npy` file that contains the binary label for each class for each sample in the testing set.
-
-`notebooks/ensemble.ipynb`: load and ensemble prediction results from different models. Use this to aggregate prediction results from different models
+`probability_ensemble.py`: collect and aggregating the prediction results. After running `python main.py`, run this to prepare ensemble and prepare the final submission file. Input and output paths need to be changed to your own paths in this file when using it.
 
 `ensemble/`: contains the code for model training, validation and prediction.
 
