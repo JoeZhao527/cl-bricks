@@ -13,6 +13,11 @@ class PATHS:
         "./downloads/train_data_features_v3_fixed/train_features_split3_4_v3.csv",
         "./downloads/train_data_features_v3_fixed/train_features_split4_4_v3.csv",
         # TODO: add 5 splits training data
+        "./downloads/train_data_features_v3_fixed/train_features_split1_5_v3.csv",
+        "./downloads/train_data_features_v3_fixed/train_features_split2_5_v3.csv",
+        "./downloads/train_data_features_v3_fixed/train_features_split3_5_v3.csv",
+        "./downloads/train_data_features_v3_fixed/train_features_split4_5_v3.csv",
+        "./downloads/train_data_features_v3_fixed/train_features_split5_5_v3.csv",
     ]
 
     test_x_path = "./downloads/test_features_full_v3.csv"

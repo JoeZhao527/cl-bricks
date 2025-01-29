@@ -1,4 +1,4 @@
-from .class_weight import base_rf_performance_weights
+from .class_weight import base_rf_performance_weights, base_xgb_performance_weights
 
 base_rf = {
     "data": {
@@ -112,7 +112,46 @@ weighted_rf = {
             'class_weight': base_rf_performance_weights
         },
         "none_ratio_thr_list": [0.1, 0.15, 0.35, 0.75, 0.85],
-        "model_save_dir": "weighted_rf_models"  # this will be the directory inside `output_base`
     },
     "output_base": "./logs/ensemble/weighted_rf"
+}
+
+weighted_xgboost = {
+    "data": {
+        "n_splits": 10,
+        "random_state": 42,
+    },
+    "model": {
+        "model_cls": "xgboost",
+        "model_params": {
+            'device': 'cuda',
+            'n_estimators': 400,       # Number of trees
+            'learning_rate': 0.3,     # Default learning rate
+            'max_depth': 6,           # Maximum depth of trees
+            'min_child_weight': 1,    # Minimum sum of weights in a child node
+            'subsample': 0.8,         # Fraction of samples per tree
+            'colsample_bytree': 0.8,  # Fraction of features per tree
+            'gamma': 0,               # Minimum loss reduction for split
+            'reg_alpha': 0,           # L1 regularization term
+            'reg_lambda': 1,          # L2 regularization term
+            'random_state': 42,
+            'eval_metric': 'logloss',
+            'class_weight': base_xgb_performance_weights,
+            'n_jobs': 20
+        },
+        "none_ratio_thr_list": [0.1, 0.15, 0.35, 0.75, 0.85],
+    },
+    "output_base": "./logs/ensemble/base_xgboost"
+}
+
+weighted_ensemble = {
+    "data": {
+        "n_splits": 10,
+        "random_state": 42
+    },
+    "model": {
+        "rf": weighted_rf["model"],
+        "xgb": weighted_xgboost["model"],
+    },
+    "output_base": "./logs/ensemble/weighted_ensemble"
 }
