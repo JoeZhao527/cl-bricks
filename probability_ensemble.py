@@ -59,20 +59,20 @@ if __name__ == '__main__':
     # UPDATE THESE PATHS FOR ENSEMBLE
     prob_prediction_paths = {
         "xgb": [
-            "./logs/ensemble/base_ensemble/01_29_2025-18_49_29/xgb/test_predictions/tst_preds_0.csv",
-            "./logs/ensemble/base_ensemble/01_29_2025-18_49_29/xgb/test_predictions/tst_preds_1.csv",
-            "./logs/ensemble/base_ensemble/01_29_2025-18_49_29/xgb/test_predictions/tst_preds_2.csv",
-            "./logs/ensemble/base_ensemble/01_29_2025-18_49_29/xgb/test_predictions/tst_preds_3.csv",
-            "./logs/ensemble/base_ensemble/01_29_2025-18_49_29/xgb/test_predictions/tst_preds_4.csv",
-            "./logs/ensemble/base_ensemble/01_29_2025-18_49_29/xgb/test_predictions/tst_preds_5.csv",
+            "./logs/ensemble/weighted_ensemble/01_29_2025-18_49_29/xgb/test_predictions/tst_preds_0.csv",
+            "./logs/ensemble/weighted_ensemble/01_29_2025-18_49_29/xgb/test_predictions/tst_preds_1.csv",
+            "./logs/ensemble/weighted_ensemble/01_29_2025-18_49_29/xgb/test_predictions/tst_preds_2.csv",
+            "./logs/ensemble/weighted_ensemble/01_29_2025-18_49_29/xgb/test_predictions/tst_preds_3.csv",
+            "./logs/ensemble/weighted_ensemble/01_29_2025-18_49_29/xgb/test_predictions/tst_preds_4.csv",
+            "./logs/ensemble/weighted_ensemble/01_29_2025-18_49_29/xgb/test_predictions/tst_preds_5.csv",
         ],
         "rf": [
-            "./logs/ensemble/base_ensemble/01_29_2025-18_49_29/rf/test_predictions/tst_preds_0.csv",
-            "./logs/ensemble/base_ensemble/01_29_2025-18_49_29/rf/test_predictions/tst_preds_1.csv",
-            "./logs/ensemble/base_ensemble/01_29_2025-18_49_29/rf/test_predictions/tst_preds_2.csv",
-            "./logs/ensemble/base_ensemble/01_29_2025-18_49_29/rf/test_predictions/tst_preds_3.csv",
-            "./logs/ensemble/base_ensemble/01_29_2025-18_49_29/rf/test_predictions/tst_preds_4.csv",
-            "./logs/ensemble/base_ensemble/01_29_2025-18_49_29/rf/test_predictions/tst_preds_5.csv",
+            "./logs/ensemble/weighted_ensemble/01_29_2025-18_49_29/rf/test_predictions/tst_preds_0.csv",
+            "./logs/ensemble/weighted_ensemble/01_29_2025-18_49_29/rf/test_predictions/tst_preds_1.csv",
+            "./logs/ensemble/weighted_ensemble/01_29_2025-18_49_29/rf/test_predictions/tst_preds_2.csv",
+            "./logs/ensemble/weighted_ensemble/01_29_2025-18_49_29/rf/test_predictions/tst_preds_3.csv",
+            "./logs/ensemble/weighted_ensemble/01_29_2025-18_49_29/rf/test_predictions/tst_preds_4.csv",
+            "./logs/ensemble/weighted_ensemble/01_29_2025-18_49_29/rf/test_predictions/tst_preds_5.csv",
         ],
     }
 
