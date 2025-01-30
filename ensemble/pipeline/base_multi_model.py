@@ -45,8 +45,8 @@ def run(cfg):
     log(f"Using {len(train_sets)} train sets. Original column size {len(train_sets[0].columns)}.")
 
     # only keep the selected feature columns
-    train_sets = [trn[FEATURE_NAMES] for trn in train_sets]
-    test_sets = [tst[FEATURE_NAMES] for tst in test_sets]
+    # train_sets = [trn[FEATURE_NAMES] for trn in train_sets]
+    # test_sets = [tst[FEATURE_NAMES] for tst in test_sets]
     # test_X = test_X[FEATURE_NAMES]
     
     log(f"Got {len(train_sets[0].columns)} feature columns after selection.")
