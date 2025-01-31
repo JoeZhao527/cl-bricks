@@ -27,8 +27,8 @@ base_lgb = {
         "model_cls": "lightgbm",
         "model_params": {
             'verbose':-1,
-            'n_estimators': 100,
-            'learning_rate': 0.1,
+            'n_estimators': 400,
+            'learning_rate': 0.2,
             'random_state': 42,
             'n_jobs': 20,
             'objective': 'multiclass',
@@ -75,6 +75,7 @@ base_ensemble = {
     "model": {
         "xgb": base_xgboost["model"],
         "rf": base_rf["model"],
+        "lgb": base_lgb["model"],
     },
     "output_base": "./logs/ensemble/base_ensemble"
 }

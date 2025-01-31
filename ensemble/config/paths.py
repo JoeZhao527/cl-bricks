@@ -18,6 +18,14 @@ class PATHS:
         "./downloads/train_data_features_v3_fixed/train_features_split3_5_v3.csv",
         "./downloads/train_data_features_v3_fixed/train_features_split4_5_v3.csv",
         "./downloads/train_data_features_v3_fixed/train_features_split5_5_v3.csv",
+
+        "./downloads/data_features_s10/train_features_shuffle_10_split1_1_v3.csv",
+        "./downloads/data_features_s10/train_features_shuffle_10_split1_2_v3.csv",
+        "./downloads/data_features_s10/train_features_shuffle_10_split2_2_v3.csv",
+
+        "./downloads/chunk_shuffle_6/data_features/train_features_shuffle_6_split1_1_v3.csv",
+        "./downloads/chunk_shuffle_6/data_features/train_features_shuffle_6_split1_2_v3.csv",
+        "./downloads/chunk_shuffle_6/data_features/train_features_shuffle_6_split2_2_v3.csv",
     ]
 
     train_zip_path = "./downloads/train_X_v0.1.0.zip"
