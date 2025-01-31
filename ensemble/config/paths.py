@@ -20,6 +20,8 @@ class PATHS:
         "./downloads/train_data_features_v3_fixed/train_features_split5_5_v3.csv",
     ]
 
+    train_zip_path = "./downloads/train_X_v0.1.0.zip"
+
     test_x_path = "./downloads/test_features_full_v3.csv"
 
     test_x_paths = [
