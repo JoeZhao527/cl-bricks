@@ -12,24 +12,38 @@ import warnings
 import concurrent.futures
 from ensemble.config.paths import PATHS
 import datetime
+import argparse
 warnings.filterwarnings("ignore")
 np.random.seed(83355)
+
+# Initialize argparse
+parser = argparse.ArgumentParser(description="Process and shuffle chunks for time series data")
+parser.add_argument('--train_zip_path', type=str, required=True, help="Path to the train zip file")
+parser.add_argument('--n_splits', type=int, nargs='+', default=[1, 2], help="List of chunk sizes to shuffle")
+parser.add_argument('--output_dir', type=str, required=True, help="Output directory to save the results")
+
+# Parse arguments
+args = parser.parse_args()
 
 def log(msg):
     print(f"[{datetime.datetime.now()}] Main Log: {msg}")
 
-folder_name = 'data_features'
+log(f"Get train signal zip path: {args.train_zip_path}")
+log(f"Get n_splits: {args.n_splits} {type(args.n_splits)}")
+log(f"Get output_dir: {args.output_dir}")
+
+folder_name = os.path.join(args.output_dir, 'data_features')
 if not os.path.exists(folder_name):
     os.makedirs(folder_name)
     
-folder_name2 = 'data_features_fix'
+folder_name2 = os.path.join(args.output_dir, 'data_features_fix')
 if not os.path.exists(folder_name2):
     os.makedirs(folder_name2)
 
 dt = 4838397.067/85922 # from max val and largest recording
 
 train_y = pd.read_csv(PATHS.train_y_path)
-zipf = ZipFile(PATHS.train_zip_path, 'r')
+zipf = ZipFile(args.train_zip_path, 'r')
 zipftest = ZipFile(PATHS.test_zip_path, 'r')
 listtestfile = zipftest.namelist()[1:]
 
@@ -315,7 +329,7 @@ newrow2column = ['0_Fundamental frequency',  '0_Human range energy',  '0_Max pow
 
 # init empty csv, we will using margin with length of 1/n
 log(f"Initialize empty output csv files.")
-for i in [6, 7]:
+for i in args.n_splits:
     for j in range(1, i+1):
         pd.DataFrame(columns=columnlist_test).to_csv(f"{folder_name}/train_features_split{j}_{i}_v3.csv", index=False)
 
@@ -446,7 +460,7 @@ def process_row(i):
     })
     data['timestamp'] = data['timestamp'].dt.total_seconds()
     
-    for j in [6, 7]:
+    for j in args.n_splits:
         for k in range(1, j+1):
             if len(data)//j>20 and j>1:
                 start_idx = (k-1)*(len(data)//j) #np.random.randint(0, len(data)-len(data)//j)
