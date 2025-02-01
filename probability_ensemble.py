@@ -58,37 +58,21 @@ def aggregate(pred_list: List[pd.DataFrame], filenames: list, weights=None):
 if __name__ == '__main__':
     # UPDATE THESE PATHS FOR ENSEMBLE
     prob_prediction_paths = {
-        "xgb": [
-            "./logs/ensemble/weighted_ensemble/01_29_2025-18_49_29/xgb/test_predictions/tst_preds_0.csv",
-            "./logs/ensemble/weighted_ensemble/01_29_2025-18_49_29/xgb/test_predictions/tst_preds_1.csv",
-            "./logs/ensemble/weighted_ensemble/01_29_2025-18_49_29/xgb/test_predictions/tst_preds_2.csv",
-            "./logs/ensemble/weighted_ensemble/01_29_2025-18_49_29/xgb/test_predictions/tst_preds_3.csv",
-            "./logs/ensemble/weighted_ensemble/01_29_2025-18_49_29/xgb/test_predictions/tst_preds_4.csv",
-            "./logs/ensemble/weighted_ensemble/01_29_2025-18_49_29/xgb/test_predictions/tst_preds_5.csv",
+        "lgb": [
+            "./logs/ensemble/base_ensemble/02_01_2025-13_25_10/lgb/test_predictions/tst_preds_0.csv",
+            "./logs/ensemble/base_ensemble/02_01_2025-13_25_10/lgb/test_predictions/tst_preds_1.csv",
+            "./logs/ensemble/base_ensemble/02_01_2025-13_25_10/lgb/test_predictions/tst_preds_2.csv",
+            "./logs/ensemble/base_ensemble/02_01_2025-13_25_10/lgb/test_predictions/tst_preds_3.csv",
+            "./logs/ensemble/base_ensemble/02_01_2025-13_25_10/lgb/test_predictions/tst_preds_4.csv",
+            "./logs/ensemble/base_ensemble/02_01_2025-13_25_10/lgb/test_predictions/tst_preds_5.csv",
         ],
         "rf": [
-            "./logs/ensemble/weighted_ensemble/01_29_2025-18_49_29/rf/test_predictions/tst_preds_0.csv",
-            "./logs/ensemble/weighted_ensemble/01_29_2025-18_49_29/rf/test_predictions/tst_preds_1.csv",
-            "./logs/ensemble/weighted_ensemble/01_29_2025-18_49_29/rf/test_predictions/tst_preds_2.csv",
-            "./logs/ensemble/weighted_ensemble/01_29_2025-18_49_29/rf/test_predictions/tst_preds_3.csv",
-            "./logs/ensemble/weighted_ensemble/01_29_2025-18_49_29/rf/test_predictions/tst_preds_4.csv",
-            "./logs/ensemble/weighted_ensemble/01_29_2025-18_49_29/rf/test_predictions/tst_preds_5.csv",
-        ],
-        "ff_xgb": [
-            "./logs/ensemble/base_ensemble/01_30_2025-20_17_13/xgb/test_predictions/tst_preds_0.csv",
-            "./logs/ensemble/base_ensemble/01_30_2025-20_17_13/xgb/test_predictions/tst_preds_1.csv",
-            "./logs/ensemble/base_ensemble/01_30_2025-20_17_13/xgb/test_predictions/tst_preds_2.csv",
-            "./logs/ensemble/base_ensemble/01_30_2025-20_17_13/xgb/test_predictions/tst_preds_3.csv",
-            "./logs/ensemble/base_ensemble/01_30_2025-20_17_13/xgb/test_predictions/tst_preds_4.csv",
-            "./logs/ensemble/base_ensemble/01_30_2025-20_17_13/xgb/test_predictions/tst_preds_5.csv",
-        ],
-        "ff_rf": [
-            "./logs/ensemble/base_ensemble/01_30_2025-20_17_13/rf/test_predictions/tst_preds_0.csv",
-            "./logs/ensemble/base_ensemble/01_30_2025-20_17_13/rf/test_predictions/tst_preds_1.csv",
-            "./logs/ensemble/base_ensemble/01_30_2025-20_17_13/rf/test_predictions/tst_preds_2.csv",
-            "./logs/ensemble/base_ensemble/01_30_2025-20_17_13/rf/test_predictions/tst_preds_3.csv",
-            "./logs/ensemble/base_ensemble/01_30_2025-20_17_13/rf/test_predictions/tst_preds_4.csv",
-            "./logs/ensemble/base_ensemble/01_30_2025-20_17_13/rf/test_predictions/tst_preds_5.csv",
+            "./logs/ensemble/base_ensemble/02_01_2025-13_25_10/rf/test_predictions/tst_preds_0.csv",
+            "./logs/ensemble/base_ensemble/02_01_2025-13_25_10/rf/test_predictions/tst_preds_1.csv",
+            "./logs/ensemble/base_ensemble/02_01_2025-13_25_10/rf/test_predictions/tst_preds_2.csv",
+            "./logs/ensemble/base_ensemble/02_01_2025-13_25_10/rf/test_predictions/tst_preds_3.csv",
+            "./logs/ensemble/base_ensemble/02_01_2025-13_25_10/rf/test_predictions/tst_preds_4.csv",
+            "./logs/ensemble/base_ensemble/02_01_2025-13_25_10/rf/test_predictions/tst_preds_5.csv",
         ],
     }
 
@@ -112,4 +96,4 @@ if __name__ == '__main__':
     arr = final_res.drop(columns=["filename"]).values
 
     # UPDATE THE PATH FOR COMPRESSED RES
-    np.save("0130_full_half_feat_ensemble.npy", np.stack(np.where(arr == 1)))
+    np.save("0201_lgb_rf.npy", np.stack(np.where(arr == 1)))
