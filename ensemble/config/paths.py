@@ -2,30 +2,30 @@ class PATHS:
     train_y_path = "./downloads/train_y_v0.1.0.csv"
 
     train_x_paths = [
+        # 1 split
         "./downloads/train_data_features_v3_fixed/train_features_full_v3.csv",
+
+        # 2 splits
         "./downloads/train_data_features_v3_fixed/train_features_split1_2_v3.csv",
         "./downloads/train_data_features_v3_fixed/train_features_split2_2_v3.csv",
+
+        # 3 splits
         "./downloads/train_data_features_v3_fixed/train_features_split1_3_v3.csv",
         "./downloads/train_data_features_v3_fixed/train_features_split2_3_v3.csv",
         "./downloads/train_data_features_v3_fixed/train_features_split3_3_v3.csv",
+
+        # 4 splits
         "./downloads/train_data_features_v3_fixed/train_features_split1_4_v3.csv",
         "./downloads/train_data_features_v3_fixed/train_features_split2_4_v3.csv",
         "./downloads/train_data_features_v3_fixed/train_features_split3_4_v3.csv",
         "./downloads/train_data_features_v3_fixed/train_features_split4_4_v3.csv",
-        # TODO: add 5 splits training data
+
+        # 5 splits
         "./downloads/train_data_features_v3_fixed/train_features_split1_5_v3.csv",
         "./downloads/train_data_features_v3_fixed/train_features_split2_5_v3.csv",
         "./downloads/train_data_features_v3_fixed/train_features_split3_5_v3.csv",
         "./downloads/train_data_features_v3_fixed/train_features_split4_5_v3.csv",
         "./downloads/train_data_features_v3_fixed/train_features_split5_5_v3.csv",
-
-        "./downloads/data_features_s10/train_features_shuffle_10_split1_1_v3.csv",
-        "./downloads/data_features_s10/train_features_shuffle_10_split1_2_v3.csv",
-        "./downloads/data_features_s10/train_features_shuffle_10_split2_2_v3.csv",
-
-        "./downloads/chunk_shuffle_6/data_features/train_features_shuffle_6_split1_1_v3.csv",
-        "./downloads/chunk_shuffle_6/data_features/train_features_shuffle_6_split1_2_v3.csv",
-        "./downloads/chunk_shuffle_6/data_features/train_features_shuffle_6_split2_2_v3.csv",
     ]
 
     train_zip_path = "./downloads/train_X_v0.1.0.zip"

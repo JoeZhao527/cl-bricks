@@ -73,9 +73,9 @@ base_ensemble = {
         "random_state": 42
     },
     "model": {
-        "xgb": base_xgboost["model"],
         "rf": base_rf["model"],
         "lgb": base_lgb["model"],
+        "xgb": base_xgboost["model"],
     },
     "output_base": "./logs/ensemble/base_ensemble"
 }
