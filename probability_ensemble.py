@@ -60,7 +60,7 @@ def print_full_df(x):
     pd.set_option('display.max_rows', None)
     pd.set_option('display.max_columns', None)
     pd.set_option('display.width', 2000)
-    pd.set_option('display.float_format', '{:20,.2f}'.format)
+    pd.set_option('display.float_format', '{:20,.4f}'.format)
     pd.set_option('display.max_colwidth', None)
     print(x)
     pd.reset_option('display.max_rows')
@@ -96,11 +96,12 @@ def get_norm_weightes(report_paths: List[Tuple]):
     for col in model_cols:
         norm_weight[col] = norm_weight[col] / weight_sum
 
+    norm_weight = norm_weight.fillna(1/len(report_paths))
     print_full_df(norm_weight)
 
     return {
         model_name: dict(norm_weight[['col', model_name]].values)
-        for model_name, _ in report_paths
+        for model_name, _ in report_paths.items()
     }
 
 if __name__ == '__main__':
