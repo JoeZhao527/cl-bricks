@@ -27,9 +27,14 @@ base_lgb = {
         "model_cls": "lightgbm",
         "model_params": {
             'verbose':-1,
-            'n_estimators': 400,
-            'learning_rate': 0.2,
+            'n_estimators': 500,
+            'subsample_for_bin': 300000,
+            'learning_rate': 0.1,
+            'max_depth': 8,
+            'num_leaves': 63,
             'random_state': 42,
+            'reg_alpha': 0.1,
+            'reg_lambda': 0.5,
             'n_jobs': 20,
             'objective': 'multiclass',
         },
@@ -73,8 +78,8 @@ base_ensemble = {
         "random_state": 42
     },
     "model": {
-        "rf": base_rf["model"],
         "lgb": base_lgb["model"],
+        "rf": base_rf["model"],
         "xgb": base_xgboost["model"],
     },
     "output_base": "./logs/ensemble/base_ensemble"
