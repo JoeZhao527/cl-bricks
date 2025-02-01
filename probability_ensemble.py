@@ -74,6 +74,13 @@ if __name__ == '__main__':
             "./logs/ensemble/base_ensemble/02_01_2025-13_25_10/rf/test_predictions/tst_preds_4.csv",
             "./logs/ensemble/base_ensemble/02_01_2025-13_25_10/rf/test_predictions/tst_preds_5.csv",
         ],
+        "xgb": [
+            "./logs/ensemble/base_ensemble/02_01_2025-13_25_10/xgb/test_predictions/tst_preds_0.csv",
+            "./logs/ensemble/base_ensemble/02_01_2025-13_25_10/xgb/test_predictions/tst_preds_1.csv",
+            "./logs/ensemble/base_ensemble/02_01_2025-13_25_10/xgb/test_predictions/tst_preds_3.csv",
+            "./logs/ensemble/base_ensemble/02_01_2025-13_25_10/xgb/test_predictions/tst_preds_4.csv",
+            "./logs/ensemble/base_ensemble/02_01_2025-13_25_10/xgb/test_predictions/tst_preds_5.csv"
+        ]
     }
 
     from zipfile import ZipFile
