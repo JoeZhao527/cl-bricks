@@ -56,11 +56,24 @@ def aggregate(pred_list: List[pd.DataFrame], filenames: list, weights=None):
     return final_res
 
 
-def get_norm_weightes(reports: List[Tuple]):
+def print_full_df(x):
+    pd.set_option('display.max_rows', None)
+    pd.set_option('display.max_columns', None)
+    pd.set_option('display.width', 2000)
+    pd.set_option('display.float_format', '{:20,.2f}'.format)
+    pd.set_option('display.max_colwidth', None)
+    print(x)
+    pd.reset_option('display.max_rows')
+    pd.reset_option('display.max_columns')
+    pd.reset_option('display.width')
+    pd.reset_option('display.float_format')
+    pd.reset_option('display.max_colwidth')
+
+def get_norm_weightes(report_paths: List[Tuple]):
     # List of reports and their corresponding model names
     reports = [
         (pd.read_csv(report), f"{model_name}")
-        for model_name, report in reports.items()
+        for model_name, report in report_paths.items()
     ]
 
     model_cols = [r[1] for r in reports]
@@ -83,11 +96,11 @@ def get_norm_weightes(reports: List[Tuple]):
     for col in model_cols:
         norm_weight[col] = norm_weight[col] / weight_sum
 
-    print(norm_weight)
-    
+    print_full_df(norm_weight)
+
     return {
         model_name: dict(norm_weight[['col', model_name]].values)
-        for model_name, _ in reports
+        for model_name, _ in report_paths
     }
 
 if __name__ == '__main__':
