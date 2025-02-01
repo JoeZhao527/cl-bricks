@@ -60,7 +60,7 @@ def get_norm_weightes(reports: List[Tuple]):
     # List of reports and their corresponding model names
     reports = [
         (pd.read_csv(report), f"{model_name}")
-        for model_name, report in reports
+        for model_name, report in reports.items()
     ]
 
     model_cols = [r[1] for r in reports]
@@ -83,6 +83,8 @@ def get_norm_weightes(reports: List[Tuple]):
     for col in model_cols:
         norm_weight[col] = norm_weight[col] / weight_sum
 
+    print(norm_weight)
+    
     return {
         model_name: dict(norm_weight[['col', model_name]].values)
         for model_name, _ in reports
