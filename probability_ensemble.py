@@ -107,14 +107,14 @@ def get_norm_weightes(report_paths: List[Tuple]):
 if __name__ == '__main__':
     # UPDATE THESE PATHS FOR ENSEMBLE
     prob_prediction_paths = {
-        "lgb": [
-            "./logs/ensemble/base_ensemble/02_01_2025-13_25_10/lgb/test_predictions/tst_preds_0.csv",
-            "./logs/ensemble/base_ensemble/02_01_2025-13_25_10/lgb/test_predictions/tst_preds_1.csv",
-            "./logs/ensemble/base_ensemble/02_01_2025-13_25_10/lgb/test_predictions/tst_preds_2.csv",
-            "./logs/ensemble/base_ensemble/02_01_2025-13_25_10/lgb/test_predictions/tst_preds_3.csv",
-            "./logs/ensemble/base_ensemble/02_01_2025-13_25_10/lgb/test_predictions/tst_preds_4.csv",
-            "./logs/ensemble/base_ensemble/02_01_2025-13_25_10/lgb/test_predictions/tst_preds_5.csv",
-        ],
+        # "lgb": [
+        #     "./logs/ensemble/base_ensemble/02_01_2025-13_25_10/lgb/test_predictions/tst_preds_0.csv",
+        #     "./logs/ensemble/base_ensemble/02_01_2025-13_25_10/lgb/test_predictions/tst_preds_1.csv",
+        #     "./logs/ensemble/base_ensemble/02_01_2025-13_25_10/lgb/test_predictions/tst_preds_2.csv",
+        #     "./logs/ensemble/base_ensemble/02_01_2025-13_25_10/lgb/test_predictions/tst_preds_3.csv",
+        #     "./logs/ensemble/base_ensemble/02_01_2025-13_25_10/lgb/test_predictions/tst_preds_4.csv",
+        #     "./logs/ensemble/base_ensemble/02_01_2025-13_25_10/lgb/test_predictions/tst_preds_5.csv",
+        # ],
         "rf": [
             "./logs/ensemble/base_ensemble/02_01_2025-13_25_10/rf/test_predictions/tst_preds_0.csv",
             "./logs/ensemble/base_ensemble/02_01_2025-13_25_10/rf/test_predictions/tst_preds_1.csv",
@@ -136,7 +136,7 @@ if __name__ == '__main__':
     report_paths = {
         "rf": "logs/ensemble/base_ensemble/02_01_2025-13_25_10/rf/cv_report.csv",
         "xgb": "logs/ensemble/base_ensemble/02_01_2025-13_25_10/xgb/cv_report.csv",
-        "lgb": "logs/ensemble/base_ensemble/02_01_2025-13_25_10/lgb/cv_report.csv",
+        # "lgb": "logs/ensemble/base_ensemble/02_01_2025-13_25_10/lgb/cv_report.csv",
     }
 
     norm_weights = get_norm_weightes(report_paths)
