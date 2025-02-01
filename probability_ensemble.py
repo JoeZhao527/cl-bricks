@@ -48,12 +48,45 @@ def aggregate(pred_list: List[pd.DataFrame], filenames: list, weights=None):
             dataset_preds[i].append(preds_tier)
 
     level_pred_list = get_test_agg(dataset_preds)
+
     stacked_res = get_stacked_res(level_pred_list)
 
     final_res = post_processing(stacked_res, LABEL_NAMES, filenames)
 
     return final_res
 
+
+def get_norm_weightes(reports: List[Tuple]):
+    # List of reports and their corresponding model names
+    reports = [
+        (pd.read_csv(report), f"{model_name}")
+        for model_name, report in reports
+    ]
+
+    model_cols = [r[1] for r in reports]
+
+    # Initialize the merged DataFrame with the first report
+    norm_weight = reports[0][0][['col', 'f1']].rename(columns={'f1': reports[0][1]})
+
+    # Merge the remaining reports in a loop
+    for report, col_name in reports[1:]:
+        norm_weight = pd.merge(
+            norm_weight,
+            report[['col', 'f1']].rename(columns={'f1': col_name}),
+            on=['col']
+        )
+
+    # Calculate the sum of weights for normalization
+    weight_sum = norm_weight[model_cols].sum(axis=1)
+
+    # Normalize the weights
+    for col in model_cols:
+        norm_weight[col] = norm_weight[col] / weight_sum
+
+    return {
+        model_name: dict(norm_weight[['col', model_name]].values)
+        for model_name, _ in reports
+    }
 
 if __name__ == '__main__':
     # UPDATE THESE PATHS FOR ENSEMBLE
@@ -84,14 +117,28 @@ if __name__ == '__main__':
         ]
     }
 
+    report_paths = {
+        "rf": "logs/ensemble/base_ensemble/02_01_2025-13_25_10/rf/cv_report.csv",
+        "xgb": "logs/ensemble/base_ensemble/02_01_2025-13_25_10/xgb/cv_report.csv",
+        "lgb": "logs/ensemble/base_ensemble/02_01_2025-13_25_10/lgb/cv_report.csv",
+    }
+
+    norm_weights = get_norm_weightes(report_paths)
+    weighted: bool = True
+
     from zipfile import ZipFile
     zipftest = ZipFile(PATHS.test_zip_path, 'r')
     listtestfile = list(zipftest.namelist()[1:])
 
+
     prediction_list = []
     for k, paths in prob_prediction_paths.items():
         for p in tqdm(paths, desc=f"Loading {k} results:"):
-            prediction_list.append(pd.read_csv(p))
+            model_res = pd.read_csv(p)
+            if weighted:
+                for col in model_res:
+                    model_res[col] = model_res[col] * norm_weights[k].get(col[:-2], 1/len(report_paths))
+            prediction_list.append(model_res)
     
     final_res = aggregate(prediction_list, listtestfile)
 
@@ -104,4 +151,4 @@ if __name__ == '__main__':
     arr = final_res.drop(columns=["filename"]).values
 
     # UPDATE THE PATH FOR COMPRESSED RES
-    np.save("0201_lgb_rf_xgb.npy", np.stack(np.where(arr == 1)))
+    np.save("0201_lgb_rf_xgb_weighted.npy", np.stack(np.where(arr == 1)))
