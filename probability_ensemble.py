@@ -103,4 +103,4 @@ if __name__ == '__main__':
     arr = final_res.drop(columns=["filename"]).values
 
     # UPDATE THE PATH FOR COMPRESSED RES
-    np.save("0201_lgb_rf.npy", np.stack(np.where(arr == 1)))
+    np.save("0201_lgb_rf_xgb.npy", np.stack(np.where(arr == 1)))
