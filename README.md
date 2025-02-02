@@ -44,16 +44,21 @@ This will produce an output directory like this:
 └── final_prediction.csv                              # Ensembled results for submission
 ```
 
-To inference with the trained models, update the `test_zip_path` and `test_x_paths` in the configuration yaml, then run the script with 2 additional arguments:
+To inference with the trained models, update the `test_zip_path` and `test_x_paths` in the configuration yaml, then run the script with 2 additional arguments (**REPLACE THE model_dir WITH YOUR OWN OUTPUT PATH**):
 ```
-# NOTICE: REPLACE THE model_dir WITH YOUR OWN OUTPUT PATH
 python main.py config/demo.py config/demo.py --skip_train --model_dir=./logs/ensemble/base_ensemble/02_02_2025-23_15_42
 ```
 
-## Further Configurations
-### Project Structure
+### Complete Training and Inferencing Pipeline
+The complete pipeline configuration is at `config/pipeline.yaml`. Run the following command for the complete pipeline:
+```
+python main.py config/pipeline.py
+```
+
+## Project Structure
 ```
 main.py                     # Entry point for the application
+config/                     # Configurations for model and data
 ensemble/                   # Core module for model pipeline
 │
 ├── data/                   # Data processing functions (feature normalization, feature crossing, tier labeling)
@@ -63,19 +68,4 @@ ensemble/                   # Core module for model pipeline
 ├── pipeline.py             # Data loading, processing, model training, validation, and prediction pipeline
 │
 └── probability_ensemble.py # Ensemble model to aggregate predictions from different models
-```
-
-### Configurations
-`ensemble/config/feature_names.py`
-```
-FEATURE_NAMES: base feature columns that will be used for train and test. Additional columns were dynamically appended during training.
-```
-
-`ensemble/config/labels.py`
-```
-LABEL_TIERS: Number of tiers, fixed to 5.
-
-LABEL_NAMES: All label names that needs to be predicted in the BBB dataset
-
-LEVEL_LABLES: A list of list contains labels in each tier
 ```
