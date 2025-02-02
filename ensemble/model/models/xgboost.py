@@ -1,5 +1,10 @@
 from xgboost import XGBClassifier
 import numpy as np
+import logging
+
+# Suppress warnings from XGBoost
+import xgboost as xgb
+logging.getLogger('xgboost').setLevel(logging.ERROR)
 
 class CustomXGBClassifier(XGBClassifier):
     def __init__(self, *, class_weight=None, **kwargs):

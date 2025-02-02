@@ -1,18 +1,57 @@
-from ensemble.pipeline.base_random_forest import run as base_model_run
-from ensemble.pipeline.base_multi_model import run as ensemble_run
-from ensemble.pipeline.stacking_multi_model import run as stack_ensemble_run
-from ensemble.config.pipeline import base_rf, base_lgb, base_xgboost, base_ensemble, stacking_ensemble, weighted_rf, weighted_ensemble
-from copy import deepcopy
+import os
+import yaml
+import pprint
+import argparse
+from easydict import EasyDict
+from ensemble.pipeline import run, log
+
+
+def parse_args():
+    parser = argparse.ArgumentParser(description="Model configuration and execution arguments")
+
+    parser.add_argument(
+        'config',
+        type=str,
+        help="Path to the configuration file"
+    )
+
+    parser.add_argument(
+        '--skip_train', 
+        action='store_true', 
+        help="Flag to skip training the model"
+    )
+    
+    parser.add_argument(
+        '--skip_test', 
+        action='store_true', 
+        help="Flag to skip making predictions for test samples"
+    )
+
+    parser.add_argument(
+        '--model_dir',
+        type=str,
+        help="Directory where the trained model is saved"
+    )
+
+    return parser.parse_args()
 
 if __name__ == '__main__':
-    cfg = deepcopy(base_ensemble)
-    # cfg["data"]["n_train_sets"] = 2
-    # cfg["data"]["n_splits"] = 2
+    args = parse_args()
 
-    # # cfg["model"]["model_params"]["n_estimators"] = 2
+    with open(args.config, 'r') as f:
+        cfg = EasyDict(yaml.safe_load(f))
 
-    # for k, v in cfg["model"].items():
-    #     cfg["model"][k]["model_params"]["n_estimators"] = 2
+    if args.skip_train:
+        cfg.train = False
+    
+    if args.skip_test:
+        cfg.test = False
+    
+    if args.model_dir:
+        assert os.path.exists(args.model_dir), f"{args.model_dir} not exists"
+        cfg.trained_model_dir = args.model_dir
 
-    # stack_ensemble_run(cfg)
-    ensemble_run(cfg)
+    log(f"Pipeline starts with configurations:")
+    pprint.pprint(cfg)
+
+    run(cfg)

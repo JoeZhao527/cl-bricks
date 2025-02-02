@@ -239,6 +239,18 @@ class BaseModel:
             os.makedirs(model_save_dir)
             print(f"[{datetime.now()}] Initialized model saving directory: {model_save_dir}")
 
+    def load_ckpt(self, model_base_dir: str):
+        self.classifiers = []
+
+        for tier in range(LABEL_TIERS):
+            tier_model_paths = []
+            for fold in range(len(self.folds)):
+                tier_model_paths.append(os.path.join(model_base_dir, f"tier_{tier}_fold_{fold}.pkl"))
+
+            self.classifiers.append(tier_model_paths)
+
+        print(f"[{datetime.now()}] models paths initialization completed")
+
     def train(self):
         # Train one model for each tier
         # the sub-tier model use super-tier model's prediction as input feature
