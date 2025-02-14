@@ -24,5 +24,5 @@ pytest          # tests
 # sh            # for running bash commands in some tests (linux/macos only)
 
 pandas==2.0.0
-numpy==1.24.2
+numpy==2.2.3
 tsfel==0.1.9
